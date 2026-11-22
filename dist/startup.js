@@ -14,7 +14,7 @@
     if (reduced.matches && intro.open) intro.close();
   });
   document.querySelector('#replay').addEventListener('click', openIntro);
-  if (reduced.matches || document.querySelector('#comparison').open) return;
+  if (location.hash || reduced.matches || document.querySelector('#comparison').open) return;
   try {
     if (sessionStorage.getItem('powertech-workshop-intro')) return;
     sessionStorage.setItem('powertech-workshop-intro', 'seen');
