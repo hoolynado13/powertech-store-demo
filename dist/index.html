@@ -5,10 +5,6 @@ try {
 } catch {}
 </script><link rel="stylesheet" href="style.css"><script defer src="catalog.js"></script><script defer src="app.js"></script><link rel="stylesheet" href="startup.css"><script defer src="startup.js"></script></head>
 <body>
-<dialog id="startup" aria-label="Запуск игрового ПК">
-  <canvas width="640" height="560" aria-hidden="true"></canvas>
-  <button type="button" autofocus>Пропустить</button>
-</dialog>
 <header><div class="wrap nav"><a class="brand" href="#" aria-label="PowerTechStore, в начало"><i aria-hidden="true"></i>PowerTech<span>Store</span></a><a href="#catalog">Каталог</a><span class="city">Уфа</span><button id="theme" type="button" aria-label="Тёмная тема" title="Переключить тему"><span aria-hidden="true">◐</span></button></div></header>
 <main><section class="stage" aria-label="Витрина игровых ПК"><div class="wrap scene">
 <div class="intro"><p class="kicker">Игровые ПК в Уфе</p><h1 id="hero-name">PowerTech</h1><p id="hero-spec"></p><a class="action" href="#catalog">Смотреть сборки</a></div>
@@ -17,6 +13,6 @@ try {
 </div></section>
 <section class="wrap listing" id="catalog"><div class="heading"><h2>Каталог сборок</h2><label>Бюджет <select id="budget"><option value="0">Любой</option><option value="70000">До 70 000 ₽</option><option value="100000">До 100 000 ₽</option><option value="150000">До 150 000 ₽</option></select></label></div><div id="products" aria-live="polite"></div></section></main>
 <footer class="wrap"><b>PowerTechStore</b><span>Демокаталог · Цены и изображения для примера</span></footer>
-<template id="card"><article><div class="photo"><img loading="lazy" alt=""></div><div class="details"><h3></h3><p class="gpu"></p><dl></dl><strong class="price"></strong><button class="ask">Спросить в Telegram</button></div></article></template>
+<template id="card"><article><div class="photo"><img loading="lazy" alt=""></div><div class="details"><div class="model-line"><h3></h3><strong class="price"></strong></div><p class="gpu"></p><dl></dl><button class="ask">Спросить в Telegram</button></div></article></template>
 <dialog id="chat" aria-labelledby="chat-title"><form method="dialog"><button class="close" aria-label="Закрыть">×</button></form><p class="kicker">Черновик для Telegram</p><h2 id="chat-title">Вопрос о сборке</h2><p id="draft"></p><small>Это предпросмотр сообщения. Отправка доступна в рабочей версии.</small></dialog>
 </body></html>

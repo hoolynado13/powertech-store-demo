@@ -408,3 +408,33 @@ dialog small {
   .nav { gap: 8px; }
   .city { display: none; }
 }
+
+/* Keep the first buying decision visible alongside the model. */
+.model-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 12px;
+}
+.model-line .price {
+  margin: 0;
+  font-size: 1.15rem;
+  white-space: nowrap;
+}
+.details .ask { margin-top: 20px; }
+.portrait { overflow: hidden; }
+.portrait img {
+  mask-image: radial-gradient(ellipse at center, black 44%, transparent 78%);
+}
+@media (max-width: 760px) {
+  .portrait {
+    height: clamp(225px, 57vw, 335px);
+    margin: -4px -12px 0;
+  }
+  .switcher {
+    position: static;
+    align-self: center;
+    margin: 0 0 14px;
+  }
+}
