@@ -3,20 +3,16 @@
 try {
   if (localStorage.getItem('powertech-theme') === 'light') document.documentElement.dataset.theme = 'light';
 } catch {}
-</script><link rel="stylesheet" href="style.css"><script defer src="catalog.js"></script><script defer src="app.js"></script><link rel="stylesheet" href="startup.css"><script defer src="startup.js"></script></head>
+</script><link rel="stylesheet" href="style.css"><script defer src="catalog.js"></script><script defer src="app.js"></script></head>
 <body>
-<dialog id="startup" aria-label="Запуск игрового ПК">
-  <canvas width="640" height="560" aria-hidden="true"></canvas>
-  <button type="button" autofocus>Пропустить</button>
-</dialog>
-<header><div class="wrap nav"><a class="brand" href="#" aria-label="PowerTechStore, в начало"><i aria-hidden="true"></i>PowerTech<span>Store</span></a><a href="#catalog">Каталог</a><span class="city">Уфа</span><button id="theme" type="button" aria-label="Тёмная тема" title="Переключить тему"><span aria-hidden="true">◐</span></button></div></header>
+
+<header><div class="wrap nav"><a class="brand" href="#" aria-label="PowerTechStore, в начало"><svg class="brand-pc" viewBox="0 0 36 40" aria-hidden="true"><path fill="#30293e" stroke="#d2bcff" d="m2 7 11-5 20 4v27l-11 5-20-4z"/><path fill="none" stroke="#9a89b2" d="m2 7 20 4 11-5m-11 5v27M5 27l14 3"/><g fill="none" stroke="#d2bcff" stroke-width="1.7"><ellipse cx="27.5" cy="15" rx="2.7" ry="3.7"/><ellipse cx="27.5" cy="25" rx="2.7" ry="3.7"/><circle cx="11" cy="18" r="4"/></g></svg>PowerTech<span>Store</span></a><a href="#catalog">Каталог</a><span class="city">Уфа</span><button id="theme" type="button" aria-label="Тёмная тема" title="Переключить тему"><span aria-hidden="true">◐</span></button></div></header>
 <main><section class="stage" aria-label="Витрина игровых ПК"><div class="wrap scene">
-<div class="intro"><p class="kicker">Игровые ПК в Уфе</p><h1 id="hero-name">PowerTech</h1><p id="hero-spec"></p><a class="action" href="#catalog">Смотреть сборки</a></div>
-<div class="portrait"><img id="hero-img" alt="" fetchpriority="high"></div>
-<div class="switcher" aria-label="Выбор модели"></div>
-</div></section>
-<section class="wrap listing" id="catalog"><div class="heading"><h2>Каталог сборок</h2><label>Бюджет <select id="budget"><option value="0">Любой</option><option value="70000">До 70 000 ₽</option><option value="100000">До 100 000 ₽</option><option value="150000">До 150 000 ₽</option></select></label></div><div id="products" aria-live="polite"></div></section></main>
-<footer class="wrap"><b>PowerTechStore</b><span>Демокаталог · Цены и изображения для примера</span></footer>
+<div class="intro"><h1 id="hero-name">PowerTech</h1><p id="hero-spec"></p><dl class="hero-facts"><div><dt>Видеокарта</dt><dd id="hero-gpu"></dd></div><div><dt>Процессор</dt><dd id="hero-cpu"></dd></div><div><dt>Память</dt><dd id="hero-ram"></dd></div><div><dt>SSD</dt><dd id="hero-ssd"></dd></div></dl><div class="hero-offer"><strong id="hero-price"></strong></div></div>
+<div class="orbit" role="group" aria-label="Выбор сборки"><div class="orbit-track" aria-hidden="true"></div></div>
+</div><div class="entry-action"><a class="action" href="#catalog">Перейти к каталогу</a></div></section>
+<section class="wrap listing" id="catalog" hidden><div class="heading"><h2 tabindex="-1">Каталог сборок</h2><label>Бюджет <select id="budget"><option value="0">Любой</option><option value="70000">До 70 000 ₽</option><option value="100000">До 100 000 ₽</option><option value="150000">До 150 000 ₽</option></select></label></div><div id="products" aria-live="polite"></div></section></main>
+<footer class="wrap" hidden><b>PowerTechStore</b><span>Демокаталог · Цены и изображения для примера</span></footer>
 <template id="card"><article><div class="photo"><img loading="lazy" alt=""></div><div class="details"><div class="model-line"><h3></h3><strong class="price"></strong></div><p class="gpu"></p><dl></dl><button class="ask">Спросить в Telegram</button></div></article></template>
 <dialog id="chat" aria-labelledby="chat-title"><form method="dialog"><button class="close" aria-label="Закрыть">×</button></form><p class="kicker">Черновик для Telegram</p><h2 id="chat-title">Вопрос о сборке</h2><p id="draft"></p><small>Это предпросмотр сообщения. Отправка доступна в рабочей версии.</small></dialog>
 </body></html>

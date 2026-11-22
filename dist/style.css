@@ -63,12 +63,11 @@ header,.stage {
 .brand span {
   color: var(--lilac)
 }
-.brand i {
-  width: 23px;
-  height: 24px;
-  background: var(--lilac);
-  clip-path: polygon(44% 0,100% 0,68% 39%,94% 39%,15% 100%,34% 55%,0 55%);
-  margin-right: 8px
+.brand-pc {
+  width: 29px;
+  height: 32px;
+  margin-right: 8px;
+  flex: none;
 }
 .city {
   color: #c3bfcc;
@@ -437,4 +436,114 @@ dialog small {
     align-self: center;
     margin: 0 0 14px;
   }
+}
+
+/* Towers follow the right half of an ellipse, from top to bottom. */
+.orbit {
+  position: relative;
+  width: 100%;
+  height: clamp(530px, 56vw, 760px);
+  touch-action: pan-x pinch-zoom;
+  user-select: none;
+  isolation: isolate;
+  cursor: grab;
+}
+.orbit.dragging, .orbit.dragging button { cursor: grabbing; }
+.orbit-track {
+  position: absolute;
+  left: 26%;
+  top: 15%;
+  width: 39%;
+  height: 70%;
+  border: 1px solid #917aa8;
+  border-left: 0;
+  border-radius: 0 100% 100% 0 / 0 50% 50% 0;
+}
+.orbit-pc {
+  position: absolute;
+  width: 70%;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: #d2c8dd;
+  transform: translate(-50%, -50%) scale(var(--size));
+
+  cursor: grab;
+}
+.dragging .orbit-pc { transition: none; }
+.orbit-pc img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.5;
+  object-fit: contain;
+  filter: brightness(var(--light));
+  clip-path: var(--case-outline);
+}
+/* Clip each studio photograph to the edges of its case inside the selector. */
+.orbit-pc[data-model="A1"] {
+  --case-outline: polygon(21.25% 18.35%, 22.75% 14.98%, 60.50% 2.62%, 63.50% 3.75%, 75.25% 12.36%, 75.50% 83.90%, 74.75% 88.39%, 73.50% 88.76%, 73.00% 86.89%, 64.75% 89.51%, 63.50% 92.88%, 56.00% 92.88%, 54.00% 88.39%, 28.25% 85.02%, 27.00% 88.01%, 23.25% 88.01%, 22.50% 84.27%, 21.25% 81.65%);
+}
+.orbit-pc[data-model="S2"] {
+  --case-outline: polygon(22.25% 19.10%, 23.00% 17.98%, 51.25% 3.00%, 75.00% 8.61%, 76.75% 13.11%, 76.75% 84.27%, 75.50% 86.89%, 74.00% 87.27%, 73.50% 91.39%, 70.25% 91.76%, 70.00% 89.14%, 54.00% 90.64%, 53.50% 93.26%, 48.00% 92.88%, 47.00% 89.89%, 29.50% 86.89%, 29.00% 89.51%, 24.00% 89.51%, 23.50% 86.14%, 22.25% 85.39%);
+}
+.orbit-pc[data-model="X3"] {
+  --case-outline: polygon(17.50% 14.98%, 19.00% 12.36%, 67.75% 1.87%, 70.00% 2.62%, 81.25% 13.48%, 81.50% 83.52%, 80.50% 88.01%, 79.00% 88.39%, 79.25% 85.39%, 71.75% 89.14%, 70.50% 92.13%, 62.00% 92.13%, 60.25% 88.01%, 24.25% 85.77%, 23.25% 89.14%, 18.50% 88.76%, 17.50% 85.39%);
+}
+.orbit-pc span {
+  display: inline-block;
+  min-width: 48px;
+  border-bottom: 2px solid transparent;
+  font-weight: 650;
+}
+.orbit-pc[aria-pressed="true"] span { color: white; border-color: var(--lilac); }
+#hero-price { display: block; font-size: 1.45rem; margin-bottom: 18px; }
+.intro #hero-spec { max-width: 34ch; margin-bottom: 8px; }
+@media (max-width: 760px) {
+  .orbit { height: clamp(465px, 124vw, 700px); margin: 2px 0 12px; }
+}
+
+.stage {
+  background: radial-gradient(ellipse at 76% 48%, #30253d, transparent 51%), var(--stage);
+}
+.scene { min-height: clamp(580px, 78svh, 860px); grid-template-columns: minmax(0, .84fr) minmax(0, 1.16fr); }
+.intro { padding-block: 50px; }
+.intro #hero-spec { font-size: clamp(1.3rem, 2vw, 1.85rem); }
+.intro #hero-spec { font-size: clamp(1rem, 1.5vw, 1.22rem); max-width: 37ch; }
+.hero-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 22px;
+  margin: 24px 0;
+  padding: 19px 0;
+  border-block: 1px solid #51485b;
+}
+.hero-facts dt { color: #baadc8; font-size: .875rem; }
+.hero-facts dd { color: white; font-weight: 600; text-align: left; }
+.hero-offer { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; }
+.hero-offer #hero-price { font-size: clamp(1.7rem, 3vw, 2.4rem); margin: 0; letter-spacing: -.05em; }
+#build-count {
+  margin-left: 14px;
+  padding-inline: 10px;
+  border-left: 1px solid #746185;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+@media (max-width: 760px) {
+  .scene { min-height: calc(100svh - 60px); justify-content: center; }
+  .intro { padding: 36px 0 6px; }
+  .hero-facts { gap: 10px 18px; margin-block: 16px; }
+}
+
+[hidden] { display: none !important; }
+.stage { min-height: calc(100svh - 72px); display: flex; flex-direction: column; }
+.stage .scene { flex: 1; min-height: 0; width: 100%; }
+.entry-action { text-align: center; padding: 12px 16px max(22px, env(safe-area-inset-bottom)); }
+.entry-action .action { min-width: 200px; }
+@media (max-width: 760px) {
+  .stage { min-height: calc(100svh - 60px); }
+  .stage .intro { padding: 18px 0 0; }
+  .stage .hero-facts { display: none; }
+  .stage .orbit { height: clamp(290px, 49svh, 490px); }
+  .entry-action { padding-top: 4px; }
 }
