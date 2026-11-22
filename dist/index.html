@@ -10,6 +10,7 @@
   <script defer src="catalog.js"></script>
   <script defer src="app.js"></script>
   <script defer src="store-help.js"></script>
+  <script defer src="rig-builder.js"></script>
   <script defer src="startup.js"></script>
 </head>
 <body>
@@ -24,7 +25,7 @@
   <header class="wrap nav">
     <a class="brand" href="#" aria-label="PowerTech Store, в начало"><i aria-hidden="true"></i>PowerTech Store</a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="store-nav">Меню</button>
-    <nav class="store-nav" id="store-nav" aria-label="Разделы магазина"><a href="#catalog">Каталог</a><a href="#services">Мастерская</a><a href="#contacts">Контакты</a></nav>
+    <nav class="store-nav" id="store-nav" aria-label="Разделы магазина"><a href="#catalog">Каталог</a><a href="#configurator">Конфигуратор</a><a href="#services">Мастерская</a><a href="#contacts">Контакты</a></nav>
     <span class="city"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2"/></svg>Уфа</span>
   </header>
   <main class="wrap">
@@ -41,7 +42,7 @@
       <div class="switcher" role="group" aria-label="Выбор модели"></div>
     </section>
     <section class="listing" id="catalog" aria-labelledby="catalog-title">
-      <div class="heading"><div class="catalog-heading"><h2 id="catalog-title">Каталог</h2><output id="result-count" aria-label="Найдено сборок"></output></div><button id="find-game" class="tool-button">Подобрать по игре ↗</button>
+      <div class="heading"><div class="catalog-heading"><h2 id="catalog-title">Каталог</h2><output id="result-count" aria-label="Найдено сборок"></output></div><div class="catalog-actions"><button id="open-bench" class="tool-button" aria-haspopup="dialog">График FPS ↗</button><button id="find-game" class="tool-button">Подобрать по игре ↗</button></div>
       </div>
       <div id="catalog-tools">
         <nav class="series" aria-label="Категория ПК"><a href="#catalog">Все сборки</a><a href="#gaming">Игровые</a><a href="#exclusive">Эксклюзивные</a><a href="#professional">Профессиональные</a></nav>
@@ -61,6 +62,25 @@
         <span id="compare-status" aria-live="polite"></span>
         <button id="compare-open" class="action" aria-haspopup="dialog" disabled>Сравнить</button>
         <button id="compare-clear" type="button">Сбросить</button>
+      </div>
+    </section>
+    <section id="inside-a1" class="cutaway" aria-labelledby="cutaway-title" hidden>
+      <div class="cutaway-heading"><h2 id="cutaway-title">3D-превью корпуса</h2><p class="cutaway-hint">Нажмите на метку, чтобы приблизить деталь</p>
+      </div>
+      <div class="cutaway-photo"><div class="cutaway-lens">
+        <img src="a1-inside.webp" loading="lazy" width="767" height="340" alt="Вид внутри корпуса: видеокарта снизу, башенный кулер в центре и память справа">
+        <div class="cutaway-pins" role="group" aria-label="Детали сборки"></div></div>
+        <button type="button" class="cutaway-back" hidden>← К общему виду</button>
+      </div>
+      <div hidden class="cutaway-readout" aria-live="polite" aria-atomic="true">
+        <div><small></small><h3></h3></div><p></p>
+      </div>
+      <div class="cutaway-choices" role="group" aria-label="Выбрать комплектующую"></div>
+    </section>
+    <section id="configurator" class="rig-builder" aria-labelledby="rig-title">
+      <div class="rig-heading"><h2 id="rig-title">Свой комплект ПК</h2><p>Выберите детали и сохраните список для мастерской.</p></div>
+      <div class="rig-layout"><form id="rig-options"></form>
+        <aside class="rig-summary"><h3>Ваша конфигурация</h3><dl id="rig-list"></dl><button class="action" id="rig-save" type="button">Скачать список ↓</button></aside>
       </div>
     </section>
     <section class="workshop" id="services" aria-labelledby="services-title">
@@ -131,6 +151,13 @@
       </div>
     </article>
   </template>
+  <dialog id="bench-chart" aria-labelledby="bench-title">
+    <form method="dialog"><button class="close" aria-label="Закрыть график">×</button></form>
+    <h2 id="bench-title">Тесты в играх</h2>
+    <div class="game-fields"><label>Игра<select id="bench-game"></select></label><label>Разрешение<select id="bench-resolution"><option value="0">Full HD · 1080p</option><option value="1">QHD · 1440p</option></select></label></div>
+    <figure class="bench-figure"><figcaption>Средняя частота кадров, FPS</figcaption><div id="bench-bars" aria-live="polite"></div></figure>
+    <p id="bench-credit"></p>
+  </dialog>
   <dialog id="game-finder" aria-labelledby="game-title">
     <form method="dialog"><button class="close" aria-label="Закрыть подбор">×</button></form>
     <h2 id="game-title">Во что играешь?</h2>
@@ -142,8 +169,13 @@
   <dialog id="comparison" aria-labelledby="compare-heading">
     <form method="dialog"><button class="close" aria-label="Закрыть сравнение" autofocus>×</button></form>
     <h2 id="compare-heading">Сравнение сборок</h2>
-    <p id="compare-gap"></p>
-    <table><thead></thead><tbody></tbody></table>
+    <div class="compare-lineup"></div>
+    <div class="compare-controls">
+      <p id="compare-gap"></p>
+      <label><input type="checkbox" id="differences"> Только отличия</label>
+    </div>
+    <table aria-label="Характеристики сборок"><thead></thead><tbody></tbody></table>
+    <p id="compare-identical" hidden>Характеристики совпадают.</p>
     <button class="tool-button" id="share-compare">Скопировать ссылку</button>
     <span role="status" id="share-status"></span><input readonly hidden id="share-link" aria-label="Ссылка на сравнение">
   </dialog>

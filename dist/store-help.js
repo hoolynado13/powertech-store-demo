@@ -2,7 +2,7 @@
 const shareInput = document.querySelector('#share-link');
 document.querySelector('#share-compare').onclick = async () => {
   const link = new URL(location.href);
-  link.searchParams.set('compare', [...selection].map(pc => pc.model).join(','));
+  link.searchParams.set('compare', comparison.dataset.models);
   link.hash = 'catalog';
   shareInput.value = link.href;
   const status = document.querySelector('#share-status');
@@ -48,6 +48,34 @@ const fpsTests = {
     scores:{'Radeon RX 6600':[61.7,34.2], 'GeForce RTX 4060':[77.8,45.6], 'GeForce RTX 4070 SUPER':[143.3,87.1]}
   }
 };
+const benchmark = document.querySelector('#bench-chart');
+const benchGame = benchmark.querySelector('#bench-game');
+const benchResolution = benchmark.querySelector('#bench-resolution');
+for (const game of Object.keys(fpsTests)) benchGame.add(new Option(game,game));
+const fpsCeiling = Math.ceil(Math.max(...Object.values(fpsTests).flatMap(test => Object.values(test.scores).flat())) / 50) * 50;
+function drawBenchmark() {
+  const test = fpsTests[benchGame.value];
+  const bars = benchmark.querySelector('#bench-bars');
+  bars.replaceChildren();
+  for (const [gpu,scores] of Object.entries(test.scores)) {
+    const fps = scores[Number(benchResolution.value)];
+    const row = document.createElement('div');
+    const title = document.createElement('span');
+    const value = document.createElement('strong');
+    const track = document.createElement('div');
+    const bar = document.createElement('i');
+    title.textContent = gpu;
+    value.textContent = fps.toLocaleString('ru-RU')+' FPS';
+    bar.style.width = (100*fps/fpsCeiling)+'%';
+    track.append(bar); row.append(title,value,track); bars.append(row);
+  }
+  const source = document.createElement('a');
+  source.href=test.url; source.textContent=test.source; source.target='_blank'; source.rel='noopener';
+  benchmark.querySelector('#bench-credit').replaceChildren('Замеры видеокарт · '+test.settings+' · ',source);
+}
+benchGame.onchange=benchResolution.onchange=drawBenchmark;
+document.querySelector('#open-bench').onclick=()=>{drawBenchmark(); benchmark.showModal();};
+
 function gpuFPS(game, pixels, gpu) {
   const value = fpsTests[game]?.scores[gpu]?.[String(pixels) === '1080' ? 0 : 1];
   return value === undefined ? '' : Math.round(value) + ' FPS';

@@ -74,11 +74,38 @@ document.querySelector('#compare-clear').onclick = () => {
 };
 document.querySelector('#compare-open').onclick = () => {
   if (selection.size !== 2) return;
-  const [first, second] = selection;
+  openComparison(...selection);
+};
+const specRows = [['Видеокарта','gpu'],['Процессор','cpu'],['Память','ram'],['SSD','ssd']];
+const differences = document.querySelector('#differences');
+function filterComparison() {
+  const rows = [...comparison.querySelectorAll('tbody tr')];
+  for (const row of rows) row.hidden = differences.checked && row.dataset.same === 'true';
+  document.querySelector('#compare-identical').hidden = rows.some(row => !row.hidden);
+}
+differences.onchange = filterComparison;
+function openComparison(first, second) {
+  comparison.dataset.models = [first.model,second.model].join(',');
   const gap = Math.abs(first.price - second.price);
   const higher = first.price > second.price ? first : second;
   document.querySelector('#compare-gap').textContent = gap
     ? 'Power ' + higher.model + ' дороже на ' + money(gap) : 'Обе сборки стоят одинаково.';
+  const lineup = comparison.querySelector('.compare-lineup');
+  lineup.replaceChildren();
+  for (const pc of [first, second]) {
+    const panel = document.createElement('div');
+    const photo = document.createElement('img');
+    photo.src = images[pc.model] || 'tower.webp';
+    photo.alt = '';
+    const caption = document.createElement('div');
+    const name = document.createElement('h3');
+    name.textContent = 'Power ' + pc.model;
+    const price = document.createElement('strong');
+    price.textContent = money(pc.price);
+    caption.append(name,price);
+    panel.append(photo,caption);
+    lineup.append(panel);
+  }
   const header = comparison.querySelector('thead');
   const body = comparison.querySelector('tbody');
   header.replaceChildren();
@@ -90,18 +117,108 @@ document.querySelector('#compare-open').onclick = () => {
     cell.textContent = label;
     heading.append(cell);
   }
-  for (const [label, key] of [['Цена','price'],['Видеокарта','gpu'],['Процессор','cpu'],['Память','ram'],['SSD','ssd']]) {
+  for (const [label, key] of specRows) {
     const row = body.insertRow();
+    row.dataset.same = String(first[key] === second[key]);
     const title = document.createElement('th');
     title.scope = 'row';
     title.textContent = label;
     row.append(title);
-    for (const pc of selection) row.insertCell().textContent = key === 'price' ? money(pc.price) : pc[key];
+    for (const pc of [first,second]) row.insertCell().textContent = pc[key];
   }
   document.querySelector('#share-status').textContent = '';
   document.querySelector('#share-link').hidden = true;
+  differences.checked = false;
+  filterComparison();
   comparison.showModal();
-};
+}
+
+function setupCutaway() {
+  const pc = catalog.find(entry => entry.model === 'A1');
+  if (!pc) return;
+  const section = document.querySelector('#inside-a1');
+  const pins = section.querySelector('.cutaway-pins');
+  const readout = section.querySelector('.cutaway-readout');
+  const parts = [
+    {label:'Видеокарта', name:pc.gpu, x:40, y:85, text:'Длинная плата под кулером рисует кадры игры. Чем выше разрешение экрана, тем больше пикселей ей нужно обработать за каждый кадр.'},
+    {label:'Процессор', name:pc.cpu, x:46, y:40, text:'Сам чип скрыт под серебристой башней охлаждения. Он рассчитывает логику игры, обрабатывает действия игроков и готовит команды для видеокарты.'},
+    {label:'Оперативная память', name:pc.ram, x:70, y:36, text:'Две вертикальные планки справа от кулера хранят данные, с которыми игра работает прямо сейчас. После выключения ПК содержимое оперативной памяти исчезает.'},
+    {label:'Охлаждение', name:'Корпусный вентилятор', x:18, y:39, text:'Вентилятор у задней стенки помогает выводить нагретый воздух из корпуса. Так тепло от процессора и видеокарты не скапливается внутри.'},
+    {label:'Материнская плата',name:'Материнская плата',x:32,y:20,text:'Под кулером и видеокартой расположена основная плата. По её дорожкам процессор обменивается данными с памятью, накопителем и другими устройствами.'},
+    {label:'Блок питания',name:'Блок питания',x:23,y:95,text:'Блок питания находится под нижним кожухом. На задней стенке виден сетевой разъём, а внутри корпуса кабели расходятся к плате и видеокарте.'}
+  ];
+  const lens = section.querySelector('.cutaway-lens');
+  const choices = section.querySelector('.cutaway-choices');
+  const hint = section.querySelector('.cutaway-hint');
+  const overview = section.querySelector('.cutaway-back');
+  let viewer, inspecting = false;
+  let index = 0;
+  function activate(i, zoom = true) {
+    index = (i + parts.length) % parts.length;
+    inspecting = zoom;
+    viewer?.focus(zoom ? index : null);
+    const part = parts[index];
+    const scale = zoom ? 2 : 1;
+    // Center the selected component as far as the photograph's edges allow.
+    const offset = percent => Math.max(100 * (1 - scale), Math.min(0, 50 - scale * percent));
+    lens.style.transform = !viewer && zoom
+      ? 'translate(' + offset(part.x) + '%, ' + offset(part.y) + '%) scale(' + scale + ')'
+      : 'none';
+    pins.hidden = zoom;
+    overview.hidden = !zoom;
+    readout.hidden = !zoom;
+    Array.from(choices.children).forEach((button,i) => button.setAttribute('aria-pressed',String(zoom && i===index)));
+    hint.hidden = zoom;
+    readout.querySelector('small').textContent = (index + 1) + ' / ' + parts.length + ' · ' + part.label;
+    readout.querySelector('h3').textContent = part.name;
+    readout.querySelector('p').textContent = part.text;
+  }
+  function resetView() {
+    activate(index,false);
+    choices.children[index].focus({preventScroll:true});
+  }
+  overview.onclick = resetView;
+  section.addEventListener('keydown',event => {
+    if(event.key==='Escape' && inspecting) { event.preventDefault(); resetView(); }
+  });
+  parts.forEach((part,index) => {
+    const choice=document.createElement('button');
+    choice.type='button';
+    choice.textContent=part.label;
+    choice.onclick=()=>activate(index);
+    choices.append(choice);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.setAttribute('aria-label', part.label);
+    button.style.left = part.x + '%';
+    button.style.top = part.y + '%';
+    button.textContent = index + 1;
+    button.onclick = () => { activate(index); overview.focus({preventScroll:true}); };
+    pins.append(button);
+  });
+  activate(0,false);
+  section.hidden = false;
+  const photoHint = hint.textContent;
+  const observer = new IntersectionObserver(async entries => {
+    if (!entries.some(entry => entry.isIntersecting)) return;
+    observer.disconnect();
+    try {
+      const {mountViewer} = await import('./a1-viewer.js');
+      viewer = mountViewer(section,pins,() => {
+        viewer = undefined;
+        hint.textContent = photoHint;
+        parts.forEach((part,i) => {
+          Object.assign(pins.children[i].style,{left:part.x+'%',top:part.y+'%',visibility:''});
+        });
+        activate(index,inspecting);
+      });
+      hint.textContent = 'Вращайте корпус · Нажмите на метку для приближения';
+      activate(index,inspecting);
+    } catch (error) { console.warn('3D-просмотр недоступен',error); }
+  },{rootMargin:'200px'});
+  observer.observe(section);
+}
+setupCutaway();
 
 let tilePhoto;
 let activeTransition;
