@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>PowerTechStore — демокаталог</title><link rel="stylesheet" href="./style.css"><script defer src="./catalog.js"></script><script defer src="./app.js"></script></head>
+<body><header><div class="wrap bar"><strong class="brand"><b>PT</b> PowerTechStore</strong><span>Демомагазин</span></div></header>
+<main class="wrap"><section class="hero"><img src="./tower.webp" alt="Игровой компьютер с подсветкой"><div><p>Каталог игровых ПК</p><h1>Выбери свою<br>сборку<span>.</span></h1><a href="#catalog">Смотреть сборки</a></div></section>
+<section id="catalog"><div class="heading"><h2>Готовые ПК</h2><label>Бюджет <select id="budget"><option value="0">Любой</option><option value="70000">До 70 000 ₽</option><option value="100000">До 100 000 ₽</option><option value="150000">До 150 000 ₽</option></select></label></div><div id="products" aria-live="polite"></div></section></main>
+<footer class="wrap">Пробный каталог · Комплектации и цены приведены для примера.</footer>
+<template id="card"><article><div class="model"><small>Игровая сборка</small><h3></h3></div><dl></dl><strong class="price"></strong><button>Спросить в Telegram</button></article></template>
+<dialog id="chat"><form method="dialog"><button class="close" aria-label="Закрыть">×</button></form><small>Демонстрация</small><h2>Сообщение менеджеру</h2><p id="draft"></p><p>В рабочем каталоге эта кнопка откроет чат магазина. В макете сообщение остаётся здесь.</p></dialog></body></html>
