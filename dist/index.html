@@ -3,8 +3,12 @@
 try {
   if (localStorage.getItem('powertech-theme') === 'light') document.documentElement.dataset.theme = 'light';
 } catch {}
-</script><link rel="stylesheet" href="style.css"><script defer src="catalog.js"></script><script defer src="app.js"></script></head>
+</script><link rel="stylesheet" href="style.css"><script defer src="catalog.js"></script><script defer src="app.js"></script><link rel="stylesheet" href="startup.css"><script defer src="startup.js"></script></head>
 <body>
+<dialog id="startup" aria-label="Запуск игрового ПК">
+  <canvas width="640" height="560" aria-hidden="true"></canvas>
+  <button type="button" autofocus>Пропустить</button>
+</dialog>
 <header><div class="wrap nav"><a class="brand" href="#" aria-label="PowerTechStore, в начало"><i aria-hidden="true"></i>PowerTech<span>Store</span></a><a href="#catalog">Каталог</a><span class="city">Уфа</span><button id="theme" type="button" aria-label="Тёмная тема" title="Переключить тему"><span aria-hidden="true">◐</span></button></div></header>
 <main><section class="stage" aria-label="Витрина игровых ПК"><div class="wrap scene">
 <div class="intro"><p class="kicker">Игровые ПК в Уфе</p><h1 id="hero-name">PowerTech</h1><p id="hero-spec"></p><a class="action" href="#catalog">Смотреть сборки</a></div>
