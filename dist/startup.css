@@ -9,15 +9,22 @@
   padding: 0;
   border: 0;
   border-radius: 0;
-  background: radial-gradient(ellipse at 50% 48%, #252035, #100f16 65%);
+  background: transparent;
   color: white;
   display: grid;
   place-items: center;
   overflow: hidden;
-  animation: boot-reveal 680ms 1980ms ease-in-out both;
+  animation: none;
+}
+#startup::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 48%, #252035, #100f16 65%);
+  opacity: var(--curtain, 1);
 }
 #startup::backdrop { background: transparent; }
-#startup canvas { width: min(98vw, 72vh, 560px); height: auto; }
+#startup canvas { position: relative; transform-origin: 50% 47.59%; width: min(98vw, 72vh, 560px); height: auto; }
 #startup button {
   position: absolute;
   right: max(20px, env(safe-area-inset-right));
@@ -29,4 +36,3 @@
   background: #24202d;
   color: #f7f3ff;
 }
-@keyframes boot-reveal { from { opacity: 1; } to { opacity: 0; } }
