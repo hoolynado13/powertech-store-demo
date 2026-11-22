@@ -1,22 +1,98 @@
 <!doctype html>
-<html lang="ru" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#16131e"><title>PowerTechStore — игровые ПК в Уфе</title><script>
-try {
-  if (localStorage.getItem('powertech-theme') === 'light') document.documentElement.dataset.theme = 'light';
-} catch {}
-</script><link rel="stylesheet" href="style.css"><script defer src="catalog.js"></script><script defer src="app.js"></script><link rel="stylesheet" href="startup.css"><script defer src="startup.js"></script></head>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PowerTech Store — игровые ПК в Уфе</title>
+  <script>
+    try {
+      if (localStorage.getItem('powertech-theme') === 'dark') document.documentElement.dataset.theme = 'dark';
+    } catch {}
+  </script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="startup.css">
+  <script defer src="catalog.js"></script>
+  <script defer src="app.js"></script>
+  <script defer src="startup.js"></script>
+</head>
 <body>
-<dialog id="startup" aria-label="Запуск игрового ПК">
-  <canvas width="640" height="560" aria-hidden="true"></canvas>
-  <button type="button" autofocus>Пропустить</button>
-</dialog>
-<header><div class="wrap nav"><a class="brand" href="#" aria-label="PowerTechStore, в начало"><i aria-hidden="true"></i>PowerTech<span>Store</span></a><a href="#catalog">Каталог</a><span class="city">Уфа</span><button id="theme" type="button" aria-label="Тёмная тема" title="Переключить тему"><span aria-hidden="true">◐</span></button></div></header>
-<main><section class="stage" aria-label="Витрина игровых ПК"><div class="wrap scene">
-<div class="intro"><p class="kicker">Игровые ПК в Уфе</p><h1 id="hero-name">PowerTech</h1><p id="hero-spec"></p><a class="action" href="#catalog">Смотреть сборки</a></div>
-<div class="portrait"><img id="hero-img" alt="" fetchpriority="high"></div>
-<div class="switcher" aria-label="Выбор модели"></div>
-</div></section>
-<section class="wrap listing" id="catalog"><div class="heading"><h2>Каталог сборок</h2><label>Бюджет <select id="budget"><option value="0">Любой</option><option value="70000">До 70 000 ₽</option><option value="100000">До 100 000 ₽</option><option value="150000">До 150 000 ₽</option></select></label></div><div id="products" aria-live="polite"></div></section></main>
-<footer class="wrap"><b>PowerTechStore</b><span>Демокаталог · Цены и изображения для примера</span></footer>
-<template id="card"><article><div class="photo"><img loading="lazy" alt=""></div><div class="details"><div class="model-line"><h3></h3><strong class="price"></strong></div><p class="gpu"></p><dl></dl><button class="ask">Спросить в Telegram</button></div></article></template>
-<dialog id="chat" aria-labelledby="chat-title"><form method="dialog"><button class="close" aria-label="Закрыть">×</button></form><p class="kicker">Черновик для Telegram</p><h2 id="chat-title">Вопрос о сборке</h2><p id="draft"></p><small>Это предпросмотр сообщения. Отправка доступна в рабочей версии.</small></dialog>
-</body></html>
+  <dialog id="startup" aria-label="Запуск игрового ПК">
+    <div class="boot-brand"><i aria-hidden="true"></i>PowerTech Store</div>
+    <p class="boot-state">Запускаем витрину</p>
+    <canvas width="640" height="560" aria-hidden="true"></canvas>
+    <button type="button" autofocus>Пропустить</button>
+  </dialog>
+  <header class="wrap nav">
+    <a class="brand" href="#" aria-label="PowerTech Store, в начало"><i aria-hidden="true"></i>PowerTech Store</a>
+    <a class="catalog-link" href="#catalog">Каталог</a>
+    <span class="city"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2"/></svg>Уфа</span>
+    <button id="theme" type="button" aria-label="Тёмная тема">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14A8.8 8.8 0 0 1 10 3.5 8.8 8.8 0 1 0 20.5 14Z"/></svg>
+    </button>
+  </header>
+  <nav class="top-panel wrap" aria-label="Разделы магазина">
+    <div class="series"><a href="#gaming">Игровые</a><a href="#exclusive">Эксклюзивные</a><a href="#professional">Профессиональные</a></div>
+    <div><a href="#services">Услуги</a><a href="#about">О компании</a><a href="#contacts">Контакты</a></div>
+  </nav>
+  <main class="wrap">
+    <section class="stage" aria-label="Витрина игровых ПК">
+      <div class="intro">
+        <p class="kicker">Игровые ПК в Уфе</p>
+        <h1 id="hero-name">PowerTech</h1>
+        <p class="spec"><span>Видеокарта</span><b id="hero-spec"></b></p>
+        <p class="spec"><span>Процессор</span><b id="hero-cpu"></b></p>
+        <strong id="hero-price"></strong>
+        <a class="action" href="#catalog">Смотреть сборки <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="portrait"><img id="hero-img" alt="" fetchpriority="high"></div>
+      <div class="switcher" role="group" aria-label="Выбор модели"></div>
+    </section>
+    <section class="listing" id="catalog" aria-labelledby="catalog-title">
+      <div class="heading"><h2 id="catalog-title">Каталог сборок</h2>
+        <a href="#catalog" id="all-models" hidden>Все сборки</a>
+      </div>
+      <form id="prices">
+        <fieldset><legend>Цена, ₽</legend>
+          <label>От <input name="minimum" type="number" min="0" step="1" inputmode="numeric" placeholder="0"></label>
+          <label>До <input name="maximum" type="number" min="0" step="1" inputmode="numeric" placeholder="Без лимита"></label>
+        </fieldset>
+        <button class="apply">Применить</button><button type="reset" class="reset">Сбросить</button>
+      </form>
+      <div id="products" aria-live="polite"></div>
+    </section>
+    <section class="services" id="services">
+      <h2>Услуги</h2>
+      <div class="service-list">
+        <details><summary>Апгрейд ПК</summary><p>Для подбора запчастей пригодятся текущая конфигурация, бюджет и задачи, в которых не хватает производительности.</p></details>
+        <details><summary>Кастомизация</summary><p>Выберите корпус, цвет подсветки и оформление кабелей. Фотография понравившейся сборки поможет описать результат.</p></details>
+        <details><summary>3D-моделирование</summary><p>Для обсуждения детали или элемента корпуса подготовьте эскиз, размеры и требования к креплению.</p></details>
+        <details><summary>Аренда ПК</summary><p>Для подбора конфигурации укажите даты, количество компьютеров и программы или игры, которые планируете запускать.</p></details>
+      </div>
+    </section>
+    <div class="store-info">
+      <section id="about"><h2>О компании</h2><p>PowerTech Store — демонстрационная витрина ПК в Уфе. Здесь можно сравнить комплектации и подобрать сборку под свой бюджет.</p></section>
+      <section id="contacts"><h2>Контакты</h2><p>Уфа. По вопросам выбора сборки и услуг откройте справку магазина.</p><button type="button" class="text-button" data-support>Открыть поддержку ↗</button></section>
+    </div>
+  </main>
+  <aside id="support" popover="auto" aria-labelledby="support-title">
+    <div class="support-head"><h2 id="support-title">Поддержка</h2><button type="button" popovertarget="support" popovertargetaction="hide" aria-label="Закрыть поддержку">×</button></div>
+    <p>Чем помочь?</p>
+    <details><summary>Как подобрать сборку?</summary><p>Выберите категорию в верхней панели и укажите диапазон цен. В карточке каждой модели указаны видеокарта, процессор, память и SSD.</p></details>
+    <details><summary>Как уточнить наличие?</summary><p>Кнопка «Спросить в Telegram» в карточке подготовит вопрос с названием модели и ценой. В демоверсии доступен предпросмотр сообщения.</p></details>
+    <a href="#services">Посмотреть услуги ↗</a>
+  </aside>
+  <button id="support-toggle" popovertarget="support" aria-label="Поддержка"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v12h-9l-5 4v-4H4z"/><path d="M8 9h8m-8 4h5"/></svg><span>Поддержка</span></button>
+  <footer class="wrap"><b>PowerTech Store</b><span>Демокаталог · Цены и изображения для примера</span></footer>
+  <template id="card">
+    <article>
+      <div class="photo"><img loading="lazy" alt=""></div>
+      <div class="details"><h3></h3><p class="gpu"></p><dl></dl><strong class="price"></strong><button class="ask">Спросить в Telegram <span aria-hidden="true">↗</span></button></div>
+    </article>
+  </template>
+  <dialog id="chat" aria-labelledby="chat-title">
+    <form method="dialog"><button class="close" aria-label="Закрыть">×</button></form>
+    <p class="kicker">Telegram</p><h2 id="chat-title">Вопрос о сборке</h2>
+    <p id="draft"></p><small>Это предпросмотр сообщения. Отправка доступна в рабочей версии.</small>
+  </dialog>
+</body>
+</html>

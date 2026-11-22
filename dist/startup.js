@@ -2,7 +2,10 @@
 (() => {
   const overlay = document.querySelector('#startup');
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
-  if (motion.matches || location.hash || !overlay.showModal) return;
+  if (motion.matches || !overlay.showModal) return;
+  try {
+    if (sessionStorage.getItem('powertech-intro-seen')) return;
+  } catch {}
   const canvas = overlay.querySelector('canvas');
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
@@ -115,6 +118,7 @@
   motion.addEventListener('change',finish);
   const start = performance.now();
   overlay.showModal();
+  try { sessionStorage.setItem('powertech-intro-seen', '1'); } catch {}
   timer = setTimeout(finish, 2800);
   render(start);
 })();

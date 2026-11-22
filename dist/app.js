@@ -1,5 +1,9 @@
 const money = value => new Intl.NumberFormat('ru-RU').format(value) + ' ₽';
-const budget = document.querySelector('#budget');
+const prices = document.querySelector('#prices');
+const categoryNames = {gaming: 'Игровые ПК', exclusive: 'Эксклюзивные ПК', professional: 'Профессиональные ПК'};
+let category = '';
+let minimum = 0;
+let maximum = Infinity;
 const products = document.querySelector('#products');
 const chat = document.querySelector('#chat');
 const images = {A1: 'a1.webp', S2: 's2.webp', X3: 'x3.webp'};
@@ -13,7 +17,9 @@ const featured = catalog.filter(pc => pc.available);
 const switches = document.querySelector('.switcher');
 function feature(pc) {
   document.querySelector('#hero-name').textContent = 'Power ' + pc.model;
-  document.querySelector('#hero-spec').textContent = pc.gpu + ' · ' + money(pc.price);
+  document.querySelector('#hero-spec').textContent = pc.gpu;
+  document.querySelector('#hero-cpu').textContent = pc.cpu;
+  document.querySelector('#hero-price').textContent = money(pc.price);
   setPhoto(document.querySelector('#hero-img'), pc);
   for (const button of switches.children) {
     button.setAttribute('aria-pressed', String(button.textContent === pc.model));
@@ -30,7 +36,8 @@ if (featured.length) feature(featured[0]);
 else document.querySelector('.stage').hidden = true;
 function render() {
   products.replaceChildren();
-  const visible = catalog.filter(pc => pc.available && (!Number(budget.value) || pc.price <= Number(budget.value)));
+  const visible = featured.filter(pc => (!category || (pc.categories || ['gaming']).includes(category))
+    && pc.price >= minimum && pc.price <= maximum);
   for (const pc of visible) {
     const card = document.querySelector('#card').content.cloneNode(true);
     card.querySelector('h3').textContent = 'Power ' + pc.model;
@@ -51,10 +58,57 @@ function render() {
     };
     products.append(card);
   }
-  if (!visible.length) products.textContent = 'В этом бюджете пока нет доступных сборок.';
+  if (!visible.length) products.textContent = 'По этим условиям сборок нет. Измените цену или выберите другую категорию.';
 }
-budget.addEventListener('change', render);
-render();
+function syncCategory() {
+  const target = location.hash.slice(1);
+  if (Object.hasOwn(categoryNames, target)) category = target;
+  else if (!target || target === 'catalog') category = '';
+  document.querySelector('#catalog-title').textContent = categoryNames[category] || 'Каталог сборок';
+  document.querySelector('#all-models').hidden = !category;
+  for (const link of document.querySelectorAll('.series a')) {
+    if (category && link.hash === '#' + category) link.setAttribute('aria-current', 'true');
+    else link.removeAttribute('aria-current');
+  }
+  render();
+  if (Object.hasOwn(categoryNames, target)) document.querySelector('#catalog').scrollIntoView();
+}
+window.addEventListener('hashchange', syncCategory);
+for (const link of document.querySelectorAll('.series a')) {
+  link.addEventListener('click', () => {
+    if (location.hash === link.hash) document.querySelector('#catalog').scrollIntoView();
+  });
+}
+syncCategory();
+
+const lower = prices.elements.minimum;
+const upper = prices.elements.maximum;
+prices.addEventListener('input', () => upper.setCustomValidity(''));
+prices.addEventListener('submit', event => {
+  event.preventDefault();
+  const from = lower.valueAsNumber || 0;
+  const to = upper.value === '' ? Infinity : upper.valueAsNumber;
+  if (from > to) {
+    upper.setCustomValidity('Верхняя граница должна быть не меньше нижней.');
+    upper.reportValidity();
+    return;
+  }
+  minimum = from;
+  maximum = to;
+  render();
+});
+prices.addEventListener('reset', () => {
+  upper.setCustomValidity('');
+  minimum = 0;
+  maximum = Infinity;
+  render();
+});
+const support = document.querySelector('#support');
+document.querySelector('[data-support]').addEventListener('click', () => {
+  support.showPopover();
+  support.querySelector('button').focus();
+});
+support.querySelector('a').addEventListener('click', () => support.hidePopover());
 
 const themeButton = document.querySelector('#theme');
 const page = document.documentElement;
