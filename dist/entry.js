@@ -85,17 +85,6 @@ if (location.hash.length > 1 || !featured.length) {
   location.replace('store.html' + (location.hash || '#catalog'));
 }
 
-if (location.hash.length < 2 && featured.length > 1 && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  const startTime = performance.now();
-  function spin(now) {
-    const progress = Math.min(1, (now - startTime) / 950);
-    placeBuilds(featured.length * progress * 2);
-    if (progress < 1) animation = requestAnimationFrame(spin);
-    else placeBuilds(position);
-  }
-  animation = requestAnimationFrame(spin);
-}
-
 if (featured.length > 1) {
   let gesture;
   orbit.addEventListener('pointerdown', event => {
