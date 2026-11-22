@@ -1,7 +1,11 @@
 <!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#16131e"><title>PowerTechStore — игровые ПК в Уфе</title><link rel="stylesheet" href="style.css"><script defer src="catalog.js"></script><script defer src="app.js"></script></head>
+<html lang="ru" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#16131e"><title>PowerTechStore — игровые ПК в Уфе</title><script>
+try {
+  if (localStorage.getItem('powertech-theme') === 'light') document.documentElement.dataset.theme = 'light';
+} catch {}
+</script><link rel="stylesheet" href="style.css"><script defer src="catalog.js"></script><script defer src="app.js"></script></head>
 <body>
-<header><div class="wrap nav"><a class="brand" href="#" aria-label="PowerTechStore, в начало"><i aria-hidden="true"></i>PowerTech<span>Store</span></a><a href="#catalog">Каталог</a><span class="city">Уфа</span></div></header>
+<header><div class="wrap nav"><a class="brand" href="#" aria-label="PowerTechStore, в начало"><i aria-hidden="true"></i>PowerTech<span>Store</span></a><a href="#catalog">Каталог</a><span class="city">Уфа</span><button id="theme" type="button" aria-label="Тёмная тема" title="Переключить тему"><span aria-hidden="true">◐</span></button></div></header>
 <main><section class="stage" aria-label="Витрина игровых ПК"><div class="wrap scene">
 <div class="intro"><p class="kicker">Игровые ПК в Уфе</p><h1 id="hero-name">PowerTech</h1><p id="hero-spec"></p><a class="action" href="#catalog">Смотреть сборки</a></div>
 <div class="portrait"><img id="hero-img" alt="" fetchpriority="high"></div>

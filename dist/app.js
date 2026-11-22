@@ -55,3 +55,20 @@ function render() {
 }
 budget.addEventListener('change', render);
 render();
+
+const themeButton = document.querySelector('#theme');
+const page = document.documentElement;
+
+function syncThemeButton() {
+  const dark = page.dataset.theme === 'dark';
+  themeButton.setAttribute('aria-pressed', String(dark));
+  themeButton.title = dark ? 'Включить светлую тему' : 'Включить тёмную тему';
+}
+themeButton.addEventListener('click', () => {
+  page.dataset.theme = page.dataset.theme === 'dark' ? 'light' : 'dark';
+  syncThemeButton();
+  try {
+    localStorage.setItem('powertech-theme', page.dataset.theme);
+  } catch {}
+});
+syncThemeButton();
