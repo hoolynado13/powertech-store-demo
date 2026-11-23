@@ -14,8 +14,9 @@
       ['gpu','Видеокарта',['GeForce RTX 4060','Radeon RX 6600','GeForce RTX 4070 SUPER']],
       ['ssd','Накопитель',['1 ТБ NVMe','512 ГБ NVMe','2 ТБ NVMe']],
       ['cooler','Охлаждение',['Башенный кулер 120 мм','Двухбашенный кулер 120 мм']],
-      ['power','Блок питания'], ['case','Корпус',['ATX Mid Tower · белый','ATX Mid Tower · графит']]
+      ['case','Корпус',['ATX Mid Tower · белый','ATX Mid Tower · графит']]
     ]],
+    ['Блок питания',[['power','Блок питания']]],
     ['Периферия',[
       ['monitor','Монитор',[none,'24″ · Full HD · 144 Гц','27″ · QHD · 165 Гц']],
       ['keyboard','Клавиатура',[none,'Полноразмерная механическая','Компактная механическая TKL']],
@@ -60,6 +61,22 @@
     }
     form.append(group);
   }
+  const steps=document.createElement('div');
+  steps.className='rig-steps'; steps.setAttribute('role','group');steps.setAttribute('aria-label','Раздел конфигуратора');
+  const sections=[...form.querySelectorAll('fieldset')];
+  const summary=document.querySelector('.rig-summary');
+  for (const [i,name] of [...groups.map(([name])=>name),'Итог'].entries()) {
+    const button=document.createElement('button');button.type='button';button.textContent=name;
+    button.onclick=()=>{
+      for(const [n,step] of [...steps.children].entries()) step.setAttribute('aria-pressed',String(n===i));
+      sections.forEach((field,n)=>field.hidden=n!==i);
+      summary.classList.toggle('rig-final',i===sections.length);
+      form.closest('.rig-layout').classList.toggle('summary-only',i===sections.length);
+    };
+    steps.append(button);
+  }
+  document.querySelector('.rig-heading').after(steps);
+  steps.firstElementChild.click();
   update();
   document.querySelector('#rig-save').onclick=()=>{
     const lines=['Моя конфигурация ПК',''];

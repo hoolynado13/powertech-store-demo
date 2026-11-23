@@ -6,37 +6,43 @@
   <title>PowerTech Store — игровые ПК в Уфе</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="showroom.css">
+  <link rel="stylesheet" href="amber.css">
   <script defer src="catalog.js"></script>
   <script defer src="app.js"></script>
   <script defer src="store-help.js"></script>
+  <script defer src="amber.js"></script>
   <script defer src="rig-builder.js"></script>
 </head>
 <body>
   <header class="wrap nav">
-    <a class="brand" href="#" aria-label="PowerTech Store, в начало"><i aria-hidden="true"></i>PowerTech Store</a>
+    <a class="brand" href="#" aria-label="PowerTech Store, в начало"><i aria-hidden="true"></i>PowerTech Store</a><span class="brand-caption">Игровые ПК и мастерская<br>в Уфе</span>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="store-nav">Меню</button>
     <nav class="store-nav" id="store-nav" aria-label="Разделы магазина"><a href="#catalog">Каталог</a><a href="#configurator">Конфигуратор</a><a href="#services">Мастерская</a><a href="#contacts">Контакты</a></nav>
+    <div class="nav-tools"><a href="#catalog-search" aria-label="Поиск по каталогу"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></a><button id="saved-open" aria-label="Избранные сборки" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 4.8a5.1 5.1 0 0 0-7.3 0L12 6.2l-1.3-1.4a5.1 5.1 0 0 0-7.3 7.2L12 21l8.6-9a5.1 5.1 0 0 0 0-7.2Z"/></svg><small id="saved-count">0</small></button></div>
     <span class="city"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2"/></svg>Уфа</span>
   </header>
   <main class="wrap">
     <section class="stage" aria-label="Витрина игровых ПК">
       <div class="intro">
 
+        <p class="hero-label">Игровой компьютер</p>
         <h1 id="hero-name">Power <strong>A1</strong></h1>
-        <div class="spec-pair"><p class="spec"><span>Видеокарта</span><b id="hero-spec"></b></p>
-        <p class="spec"><span>Процессор</span><b id="hero-cpu"></b></p></div>
+        <p id="hero-spec"></p>
+        <div class="hero-facts"><span><i aria-hidden="true">▦</i><b id="hero-cpu"></b></span><span><i aria-hidden="true">▤</i><b id="hero-ram"></b></span><span><i aria-hidden="true">▣</i><b id="hero-disk"></b></span></div>
         <div class="hero-buy"><strong id="hero-price"></strong>
-        <button class="action" id="hero-more" aria-haspopup="dialog"><span>Подробнее</span> <span aria-hidden="true">→</span></button></div>
+        <button class="action" id="hero-more" aria-haspopup="dialog"><span>Подробнее</span> <span aria-hidden="true">→</span></button><button id="hero-save" class="heart-button" aria-label="В избранное" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 4.8a5.1 5.1 0 0 0-7.3 0L12 6.2l-1.3-1.4a5.1 5.1 0 0 0-7.3 7.2L12 21l8.6-9a5.1 5.1 0 0 0 0-7.2Z"/></svg></button></div>
       </div>
       <div class="portrait"><img id="hero-img" alt="" fetchpriority="high"></div>
       <div class="switcher" role="group" aria-label="Выбор модели"></div>
     </section>
+    <div class="showroom-grid">
     <section class="listing" id="catalog" aria-labelledby="catalog-title">
-      <div class="heading"><div class="catalog-heading"><h2 id="catalog-title">Каталог</h2><output id="result-count" aria-label="Найдено сборок"></output></div><div class="catalog-actions"><button id="open-bench" class="tool-button" aria-haspopup="dialog">График FPS</button><button id="find-game" class="tool-button">Подобрать по игре</button></div>
+      <div class="heading"><div class="catalog-heading"><h2 id="catalog-title">Каталог</h2><output id="result-count" aria-label="Найдено сборок"></output></div><input type="search" id="catalog-search" placeholder="Поиск по каталогу…" aria-label="Поиск по каталогу">
       </div>
       <div id="catalog-tools">
         <nav class="series" aria-label="Категория ПК"><a href="#catalog">Все сборки</a><a href="#gaming">Игровые</a><a href="#exclusive">Эксклюзивные</a><a href="#professional">Профессиональные</a></nav>
-        <form id="prices" aria-label="Диапазон цен">
+      </div>
+      <div class="catalog-body"><aside class="catalog-filter"><form id="prices" aria-label="Диапазон цен">
           <div class="price-header"><span>Цена</span><span id="price-values"></span>
             <button type="reset" aria-label="Сбросить диапазон цен" title="Сбросить диапазон цен">↺</button>
           </div>
@@ -45,13 +51,29 @@
             <input type="range" name="minimum" aria-label="Минимальная цена">
             <input type="range" name="maximum" aria-label="Максимальная цена">
           </div>
-        </form>
-      </div>
-      <div id="products" aria-live="polite"></div>
+        </form><label>Процессор<select id="cpu-filter"><option value="">Все</option><option>Intel</option><option>AMD</option></select></label>
+        <label>Видеокарта<select id="gpu-filter"><option value="">Все</option><option>GeForce</option><option>Radeon</option></select></label>
+        <button id="find-game" class="tool-button">Подобрать по игре ↗</button></aside>
+      <div id="products" aria-live="polite"></div></div>
       <div class="compare-tray" hidden>
         <span id="compare-status" aria-live="polite"></span>
         <button id="compare-open" class="action" aria-haspopup="dialog" disabled>Сравнить</button>
         <button id="compare-clear" type="button">Сбросить</button>
+      </div>
+    </section>
+    <section class="show-product" aria-labelledby="show-name">
+      <p class="crumb">Каталог ПК <span> / </span> Карточка сборки</p>
+      <div class="show-product-body"><div class="show-gallery"><img id="show-image" alt=""><div id="show-angles" aria-label="Ракурсы сборки"></div></div>
+      <div class="show-description"><label for="show-model">Сборка</label><select id="show-model"></select><h2 id="show-name"></h2><strong id="show-price"></strong>
+      <button class="action" id="show-stock">Уточнить наличие</button><dl id="show-specs"></dl></div></div>
+    </section>
+    <section class="show-compare"><h2>Сравнение компьютеров</h2><div class="pair-pickers"><label>Первая сборка<select id="pair-a"></select></label><label>Вторая сборка<select id="pair-b"></select></label></div>
+    <table aria-label="Сравнение выбранных сборок"><tbody id="pair-table"></tbody></table><button class="tool-button" id="pair-open">Все отличия ↗</button></section>
+    <section class="show-bench"><div class="panel-title"><h2>Тесты в играх</h2><label>Разрешение<select id="show-resolution"><option value="0">1080p</option><option value="1">1440p</option></select></label></div><div id="show-games"></div><button id="open-bench" class="tool-button" aria-haspopup="dialog">График FPS ↗</button></section>
+    <section id="configurator" class="rig-builder" aria-labelledby="rig-title">
+      <div class="rig-heading"><h2 id="rig-title">Конфигуратор ПК</h2><p>Выберите детали и сохраните список для мастерской.</p></div>
+      <div class="rig-layout"><form id="rig-options"></form>
+        <aside class="rig-summary"><h3>Ваша конфигурация</h3><dl id="rig-list"></dl><button class="action" id="rig-save" type="button">Скачать список ↓</button></aside>
       </div>
     </section>
     <section id="inside-a1" class="cutaway" aria-labelledby="cutaway-title" hidden>
@@ -67,12 +89,7 @@
       </div>
       <div class="cutaway-choices" role="group" aria-label="Выбрать комплектующую"></div>
     </section>
-    <section id="configurator" class="rig-builder" aria-labelledby="rig-title">
-      <div class="rig-heading"><h2 id="rig-title">Свой комплект ПК</h2><p>Выберите детали и сохраните список для мастерской.</p></div>
-      <div class="rig-layout"><form id="rig-options"></form>
-        <aside class="rig-summary"><h3>Ваша конфигурация</h3><dl id="rig-list"></dl><button class="action" id="rig-save" type="button">Скачать список ↓</button></aside>
-      </div>
-    </section>
+    </div>
     <section class="workshop" id="services" aria-labelledby="services-title">
       <div class="workshop-heading"><div><h2 id="services-title">Мастерская</h2><p>Сервисы для вашего ПК</p></div>
         <div class="workshop-arrows"><button type="button" aria-label="Предыдущая услуга">←</button><button type="button" aria-label="Следующая услуга">→</button></div>
@@ -122,6 +139,7 @@
           <p class="footer-brand"><i aria-hidden="true"></i>PowerTech Store</p>
           <p>Игровые сборки и компьютерная мастерская в Уфе.</p>
         </section>
+        <section><h2>Магазин</h2><a href="#catalog">Каталог ПК</a><a href="#configurator">Конфигуратор</a><a href="#services">Мастерская</a></section>
         <section id="contacts">
           <h2>Контакты</h2>
           <p>Есть вопрос о сборке или услуге?</p>
@@ -133,14 +151,15 @@
   </footer>
   <template id="card">
     <article>
-      <div class="photo"><img loading="lazy" alt=""></div>
+      <div class="photo"><img loading="lazy" alt=""><button class="tile-save heart-button" type="button" aria-label="В избранное" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 4.8a5.1 5.1 0 0 0-7.3 0L12 6.2l-1.3-1.4a5.1 5.1 0 0 0-7.3 7.2L12 21l8.6-9a5.1 5.1 0 0 0 0-7.2Z"/></svg></button></div>
       <div class="details">
         <h3><button class="ask" aria-haspopup="dialog"></button></h3>
-        <p class="gpu"></p><p class="card-cpu"></p>
+        <p class="gpu"></p><p class="card-cpu"></p><p class="card-memory"></p>
         <div class="card-bottom"><strong class="price"></strong><button class="compare-pick" type="button" aria-pressed="false">+ В сравнение</button></div>
       </div>
     </article>
   </template>
+  <dialog id="saved-builds" aria-labelledby="saved-title"><form method="dialog"><button class="close" aria-label="Закрыть избранное">×</button></form><h2 id="saved-title">Избранные сборки</h2><div id="saved-list"></div></dialog>
   <dialog id="bench-chart" aria-labelledby="bench-title">
     <form method="dialog"><button class="close" aria-label="Закрыть график">×</button></form>
     <h2 id="bench-title">Тесты в играх</h2>

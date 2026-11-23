@@ -6,7 +6,7 @@ let minimum = 0;
 let maximum = Infinity;
 const products = document.querySelector('#products');
 const chat = document.querySelector('#chat');
-const images = {A1: 'a1.webp', S2: 's2.webp', X3: 'x3.webp'};
+const images = {A1: 'catalog-a1.webp', S2: 's2.webp', X3: 'x3.webp'};
 function setPhoto(img, pc) {
   img.onload = () => img.classList.add('ready');
   img.classList.remove('ready');
@@ -22,6 +22,27 @@ function reveal(element) {
   element.animate([{opacity: .4, transform: 'translateY(5px)'}, {opacity: 1, transform: 'none'}],
     {duration: 260, easing: 'ease-out'});
 }
+let savedModels;
+try {savedModels=JSON.parse(localStorage.getItem('powertech-favorites'));} catch {}
+const favorites=new Set(Array.isArray(savedModels) ? savedModels.filter(id=>featured.some(pc=>pc.model===id)) : []);
+function syncSaved() {
+  document.querySelector('#saved-count').textContent=favorites.size;
+  for(const button of document.querySelectorAll('[data-save-model]')) {
+    const id=button.dataset.saveModel;
+    button.setAttribute('aria-pressed',String(favorites.has(id)));
+    button.setAttribute('aria-label',(favorites.has(id)?'Убрать из избранного':'В избранное')+' Power '+id);
+  }
+}
+function wireSaved(button,pc) {
+  button.dataset.saveModel=pc.model;
+  button.onclick=()=>{
+    if(favorites.has(pc.model)) favorites.delete(pc.model);
+    else favorites.add(pc.model);
+    try {localStorage.setItem('powertech-favorites',JSON.stringify([...favorites]));} catch {}
+    syncSaved();
+  };
+  syncSaved();
+}
 function feature(pc, animate = false) {
   document.querySelector('#hero-more').onclick = () => openProduct(pc);
   if (animate) {
@@ -31,11 +52,14 @@ function feature(pc, animate = false) {
   document.querySelector('#hero-name strong').textContent = pc.model;
   document.querySelector('#hero-spec').textContent = pc.gpu;
   document.querySelector('#hero-cpu').textContent = pc.cpu;
+  document.querySelector('#hero-ram').textContent = pc.ram;
+  document.querySelector('#hero-disk').textContent = 'SSD '+pc.ssd;
   document.querySelector('#hero-price').textContent = money(pc.price);
   const heroImage = document.querySelector('#hero-img');
-  heroImage.src = pc.model === 'A1' ? 'hero-a1.webp' : images[pc.model] || 'tower.webp';
+  heroImage.src = pc.model === 'A1' ? 'amber-hero.webp' : images[pc.model] || 'tower.webp';
   heroImage.alt = 'Игровой ПК Power ' + pc.model;
   heroImage.closest('.stage').dataset.model = pc.model;
+  wireSaved(document.querySelector('#hero-save'),pc);
   for (const button of switches.children) {
     button.setAttribute('aria-pressed', String(button.dataset.model === pc.model));
   }
@@ -326,6 +350,10 @@ for (const overlay of [chat,document.querySelector('#lightbox')]) {
 }
 product.addEventListener('close', scheduleFrame);
 
+function askStock(pc) {
+  document.querySelector('#draft').textContent = 'Здравствуйте! Есть в наличии Power ' + pc.model + ' за ' + money(pc.price) + '?';
+  chat.showModal();
+}
 function openProduct(pc, sourcePhoto) {
   tilePhoto = sourcePhoto;
   product.querySelector('h2').textContent = 'Power ' + pc.model;
@@ -341,16 +369,19 @@ function openProduct(pc, sourcePhoto) {
   fillSpecs(product.querySelector('dl'), pc, true);
   product.querySelector('.price').textContent = money(pc.price);
   product.querySelector('#check-stock').onclick = () => {
-    document.querySelector('#draft').textContent = 'Здравствуйте! Есть в наличии Power ' + pc.model + ' за ' + money(pc.price) + '?';
-    chat.showModal();
+    askStock(pc);
     scheduleFrame();
   };
   movePhoto(tilePhoto, product.querySelector('img'), () => { product.showModal(); scheduleFrame(); });
 }
 function render() {
   products.replaceChildren();
+  const query = document.querySelector('#catalog-search').value.trim().toLowerCase();
+  const cpu = document.querySelector('#cpu-filter').value;
+  const gpu = document.querySelector('#gpu-filter').value;
   const visible = featured.filter(pc => (!category || (pc.categories || ['gaming']).includes(category))
-    && pc.price >= minimum && pc.price <= maximum);
+    && pc.price >= minimum && pc.price <= maximum && pc.cpu.includes(cpu) && pc.gpu.includes(gpu)
+    && ('Power '+pc.model+' '+pc.cpu+' '+pc.gpu).toLowerCase().includes(query));
   document.querySelector('#result-count').textContent = String(visible.length);
   for (const pc of visible) {
     const card = document.querySelector('#card').content.cloneNode(true);
@@ -360,6 +391,7 @@ function render() {
     thumbnail.alt = 'Power ' + pc.model;
     card.querySelector('.gpu').textContent = pc.gpu;
     card.querySelector('.card-cpu').textContent = pc.cpu;
+    card.querySelector('.card-memory').textContent = pc.ram+' / '+pc.ssd;
     card.querySelector('.price').textContent = money(pc.price);
     const more = card.querySelector('.ask');
     more.setAttribute('aria-label', 'Подробнее о сборке Power ' + pc.model);
@@ -373,8 +405,10 @@ function render() {
       else if (selection.size < 2) selection.add(pc);
       syncComparison();
     };
+    wireSaved(card.querySelector('.tile-save'),pc);
     products.append(card);
   }
+  syncSaved();
   syncComparison();
   if (!visible.length) products.textContent = 'По этим условиям сборок нет. Измените цену или выберите другую категорию.';
 }
