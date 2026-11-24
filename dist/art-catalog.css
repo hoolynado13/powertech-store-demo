@@ -1,0 +1,67 @@
+/* Product spreads */
+.showroom-grid #catalog,
+.showroom-grid .show-product { grid-column:1/-1; }
+#catalog { --catalog-rule:#6b5643; }
+#catalog-title,.show-product .panel-title h2,.show-bench .panel-title h2,.show-compare>h2 {
+  margin:0; text-wrap:balance; font-family:var(--display); line-height:1.03; letter-spacing:-.055em;
+}
+#catalog #catalog-title,.show-product .panel-title h2 { font-size:clamp(30px,4.4vw,70px); }
+#catalog #catalog-title { margin-right:6px; }
+#catalog .heading { margin-bottom:18px; }
+#catalog #catalog-tools { padding-bottom:0; margin-bottom:0; border:0; }
+#catalog .series { display:flex; flex-wrap:wrap; gap:5px 15px; }
+#catalog .series a { padding:6px 2px; border:0; border-bottom:2px solid transparent; border-radius:0; background:none; }
+#catalog .series a[aria-current] { color:#ffcc91; border-bottom-color:currentColor; }
+#catalog .catalog-actions-row { margin:10px 0 18px; }
+#catalog .catalog-actions-row button { border-radius:3px; }
+#catalog-search { border-radius:0; background:none; border-width:0 0 1px; }
+#catalog #products { gap:clamp(10px,1.5vw,26px); }
+#catalog #products article { border:0; border-bottom:1px solid var(--catalog-rule); border-radius:0; background:#1e1a16; }
+#catalog #products .photo { aspect-ratio:1.45; background:#110f0c; }
+#catalog #products .photo img { width:100%; height:100%; object-fit:cover; }
+#catalog #products .details { padding:clamp(12px,1.5vw,24px); }
+#catalog #products h3 { margin:0 0 8px; }
+#catalog #products h3 .ask { font-size:clamp(21px,2.1vw,36px); }
+#catalog #products .gpu { font-size:clamp(14px,1.25vw,19px); color:#f3dcc0; }
+#catalog #products .card-cpu,#catalog #products .card-memory { font-size:14px; line-height:1.45; }
+#catalog #products .card-bottom { border-top:1px solid #4c4035; padding-top:12px; margin-top:14px; align-items:center; }
+#catalog #products .price { font-size:clamp(18px,1.65vw,28px); }
+#catalog .tile-save { margin:5px; }
+.show-product .panel-title { align-items:center; margin-bottom:20px; }
+.show-product .show-product-body { align-items:center; }
+.show-product #show-image { width:100%; border-radius:2px; object-fit:contain; background:#15120f; height:clamp(220px,29vw,480px); }
+.show-product #show-angles { justify-content:center; gap:8px; }
+.show-product #show-angles button { width:min(27%,110px); border-radius:3px; }
+.show-product #show-name { font-size:clamp(26px,3.6vw,56px); }
+.show-product #show-specs { grid-template-columns:max-content 1fr; gap:8px 18px; margin:20px 0; }
+.show-product #show-specs dt,.show-product #show-specs dd { font-size:clamp(13px,1.1vw,17px); line-height:1.45; padding:0; margin:0; }
+.show-product #show-price { font-variant-numeric:tabular-nums; margin-bottom:10px; }
+.show-product #show-stock { min-height:46px; }
+.show-compare .pair-pickers { margin-top:18px; }
+.show-compare table { table-layout:fixed; width:100%; }
+.show-compare th,.show-compare td { padding:10px 5px; overflow-wrap:anywhere; }
+.show-compare tr[data-match=true] td { color:var(--muted); }
+.catalog-differences { display:inline-flex; align-items:center; gap:8px; min-height:42px; color:var(--muted); font-size:14px; cursor:pointer; }
+.catalog-differences input { width:16px; height:16px; accent-color:var(--orange); }
+.show-bench #show-games article { align-items:stretch; grid-template-columns:minmax(80px,30%) minmax(0,1fr); gap:14px; padding:14px 0; background:none; border:0; border-bottom:1px solid var(--edge); border-radius:0; }
+#show-games article>img { aspect-ratio:auto; height:100%; min-height:100px; border-radius:2px; }
+#show-games .mini-bar { grid-template-columns:max-content minmax(16px,1fr) 52px; font-variant-numeric:tabular-nums; line-height:1.9; }
+#show-games .mini-bar i { height:5px; background:linear-gradient(90deg,#ce9254,#ffdb9c) left center / var(--score) 100% no-repeat,#3c342e; }
+@media(min-width:1061px) {
+  #catalog { display:grid; grid-template-columns:1fr auto; align-items:center; column-gap:18px; }
+  #catalog .heading,#catalog .catalog-body,#catalog .compare-tray { grid-column:1/-1; }
+  #catalog .catalog-actions-row { justify-content:flex-end; }
+  .show-product .show-product-body { grid-template-columns:minmax(0,1.3fr) minmax(0,.8fr); gap:clamp(24px,5vw,88px); }
+}
+@media(max-width:550px) {
+  #catalog #products .photo { aspect-ratio:auto; }
+  #catalog #products article { grid-template-columns:34% minmax(0,1fr); }
+  #catalog #products .details { padding:10px; }
+  #catalog #products .card-cpu,#catalog #products .card-memory { font-size:12px; }
+  #catalog #products .card-bottom { padding-top:6px; margin-top:7px; }
+  #catalog .catalog-actions-row button { min-height:44px; }
+  #catalog .series { gap:3px 9px; }
+  .show-product .panel-title { gap:8px; }
+  .show-product #show-specs { margin:12px 0; }
+  .show-bench #show-games article { grid-template-columns:74px minmax(0,1fr); gap:8px; }
+}

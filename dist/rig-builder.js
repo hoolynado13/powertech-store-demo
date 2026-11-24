@@ -33,6 +33,28 @@
     ram: () => [16,32,64].map(size => size+' ГБ '+platforms[state.cpu].memory),
     power: () => (state.gpu==='GeForce RTX 4070 SUPER' ? [650,750,850] : [550,650,750,850]).map(w=>w+' Вт')
   };
+  const presets = document.querySelector('.rig-presets');
+  const baseParts = pc => ({cpu:pc.cpu, gpu:pc.gpu, ram:pc.ram, ssd:pc.ssd+' NVMe'});
+  for (const pc of catalog.filter(entry => entry.available && platforms[entry.cpu])) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.dataset.model = pc.model;
+    const photo = new Image();
+    photo.src = 'catalog-'+pc.model.toLowerCase()+'.webp';
+    photo.loading = 'lazy';
+    photo.alt = '';
+    const name = document.createElement('strong');
+    name.textContent = 'Power '+pc.model;
+    const gpu = document.createElement('small');
+    gpu.textContent = pc.gpu;
+    button.append(photo,name,gpu);
+    button.onclick = () => {
+      Object.assign(state, baseParts(pc));
+      update();
+      steps.firstElementChild.click();
+    };
+    presets.append(button);
+  }
   function update() {
     list.replaceChildren();
     for (const [id,{select,label,options}] of fields) {
@@ -47,6 +69,10 @@
       if (select.value===none) continue;
       const term = document.createElement('dt'), value = document.createElement('dd');
       term.textContent=label; value.textContent=select.value; list.append(term,value);
+    }
+    for (const button of presets.children) {
+      const pc = catalog.find(entry => entry.model === button.dataset.model);
+      button.setAttribute('aria-pressed', String(Object.entries(baseParts(pc)).every(([key,value]) => state[key] === value)));
     }
     try { localStorage.setItem('powertech-rig-v1',JSON.stringify(state)); } catch {}
   }
@@ -78,6 +104,11 @@
   document.querySelector('.rig-heading').after(steps);
   steps.firstElementChild.click();
   update();
+  document.querySelector('.configure-model').addEventListener('click', event => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const model = document.querySelector('#show-model').value;
+    [...presets.children].find(button => button.dataset.model === model)?.click();
+  });
   document.querySelector('#rig-save').onclick=()=>{
     const lines=['Моя конфигурация ПК',''];
     for (const [key,{label}] of fields) if(state[key]!==none) lines.push(label+' — '+state[key]);

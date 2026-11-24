@@ -1,0 +1,35 @@
+.workshop.has-workshop-gallery {
+  display:grid; grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);
+  grid-template-areas:"head head" "photo notes" "tabs tabs"; gap:16px 24px;
+}
+.has-workshop-gallery .workshop-heading {grid-area:head; padding-bottom:0}
+.has-workshop-gallery .service-strip {grid-area:tabs}
+.has-workshop-gallery .service-notes {grid-area:notes; align-self:center; margin:0}
+.has-workshop-gallery .service-panel:not([hidden]) {display:grid; grid-template-columns:1fr; gap:24px}
+.has-workshop-gallery .service-panel>p {max-width:34ch; font-size:clamp(17px,1.55vw,25px); line-height:1.35}
+.has-workshop-gallery .service-panel>div {padding:0 0 0 14px}
+.workshop-gallery {grid-area:photo;position:relative;isolation:isolate;overflow:hidden;margin:0;min-width:0;
+  aspect-ratio:2.4;background:#17130f;border-radius:6px;color:#fff4df}
+.workshop-photos,.workshop-photos img,.workshop-gallery::after {position:absolute;inset:0;width:100%;height:100%}
+.workshop-photos img {object-fit:cover;opacity:0}
+.workshop-photos img.is-current {opacity:1}
+.workshop-gallery::after {content:'';pointer-events:none;background:linear-gradient(0deg,#100b08d9,transparent 58%)}
+.workshop-gallery figcaption {position:absolute;z-index:1;bottom:18px;left:18px;right:110px;display:grid;gap:5px;line-height:1.15}
+.workshop-gallery figcaption strong {font-size:clamp(17px,2vw,30px)}
+.workshop-frame-number {font:12px/1.3 monospace;color:#ffc989}
+.workshop-play {position:absolute;z-index:1;right:12px;bottom:12px;padding:6px 12px;min-height:44px;border:1px solid #baa286;border-radius:4px;color:#fff4df;background:#19130fe6}
+.has-workshop-gallery .service-strip .service-frame,.has-workshop-gallery .service-strip .service-frame[aria-selected=true] {
+  min-height:50px;background:#1b1612;align-items:center;justify-content:flex-start
+}
+@media(prefers-reduced-motion:no-preference) {
+  .workshop-photos img {transition:opacity .6s ease,transform 7.5s ease-out;transform:scale(1.03)}
+  .workshop-photos img.is-current {transform:scale(1)}
+}
+@media(max-width:760px) {
+  .workshop.has-workshop-gallery {grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "photo" "tabs" "notes";gap:10px}
+  .workshop-gallery {aspect-ratio:1.8}
+  .workshop-gallery figcaption {left:12px;bottom:12px}
+  .has-workshop-gallery .service-panel:not([hidden]) {gap:12px}
+  .has-workshop-gallery .service-strip {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible}
+  .has-workshop-gallery .service-strip .service-frame {min-width:0}
+}

@@ -1,0 +1,21 @@
+.turntable-toggle { color:#ffcf98; background:#1c1713; border:1px solid #846341; padding:9px 16px; border-radius:5px; min-height:44px; }
+.turntable-toggle[aria-pressed=true] { background:#49311f; }
+#inside-a1 .cutaway-heading { display:flex; flex-wrap:wrap; align-items:center; gap:10px 22px; }
+@media(min-width:1061px) {
+  .showroom-grid { gap:clamp(14px,2vw,32px); padding:clamp(20px,4vw,68px); }
+  .showroom-grid>section { border:0; border-radius:0; border-top:1px solid #68523c; padding:clamp(20px,2vw,36px) 0; background:none; }
+  #configurator, #inside-a1 { grid-column:1/-1; }
+  #configurator .rig-layout { grid-template-columns:1.5fr 1fr; gap:5vw; }
+  #configurator #rig-options fieldset:not([hidden]) { display:grid; grid-template-columns:1fr 1fr; gap:12px 24px; }
+  #configurator #rig-options label { display:grid; grid-template-columns:1fr; gap:4px; font-size:14px; }
+  #configurator #rig-options select { font-size:15px; padding:10px; }
+  #inside-a1 { display:grid; grid-template-columns:2fr 1fr; column-gap:4vw; align-items:start; }
+  #inside-a1[hidden] { display:none; }
+  #inside-a1 .cutaway-heading { grid-column:1/-1; margin-bottom:22px; }
+  #inside-a1 .cutaway-heading .turntable-toggle { margin-left:auto; }
+  #inside-a1 .cutaway-photo { grid-row:2/5; }
+  #inside-a1 .cutaway-lens { height:clamp(300px,31vw,540px); }
+  #inside-a1 .cutaway-choices { grid-column:2; grid-row:2; display:grid; grid-template-columns:1fr 1fr; background:none; padding:0; gap:8px; }
+  #inside-a1 .cutaway-choices button { border:1px solid var(--edge); padding:12px; min-height:48px; font-size:14px; }
+  .workshop { margin:0 clamp(20px,4vw,68px) 48px; }
+}

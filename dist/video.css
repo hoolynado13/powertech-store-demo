@@ -1,0 +1,5 @@
+.showroom-grid .film-screen { grid-column:1/-1; position:relative; isolation:isolate; background:#120f0d; padding:0; overflow:hidden; border:0; }
+.film-screen video { display:block; width:100%; height:clamp(250px,48vw,700px); object-fit:cover; }
+.film-caption { position:absolute; inset:auto 0 0; display:flex; align-items:end; justify-content:space-between; gap:12px; padding:clamp(18px,4vw,60px); background:linear-gradient(transparent,#100c09e8); }
+.showroom-grid .film-caption h2 { font-size:clamp(23px,4vw,62px); color:white; }
+#film-pause { border:1px solid #b6a18a; border-radius:4px; background:#181411bb; color:white; padding:8px 12px; min-height:42px; }

@@ -30,7 +30,7 @@
     const views = [['Корпус', 'catalog-'+pc.model.toLowerCase()+'.webp'], ['Внутри',pc.model.toLowerCase()+'-inside.webp'], ['Сзади',pc.model.toLowerCase()+'-rear.webp']];
     for (const [label,src] of views) {
       const button = document.createElement('button'), thumb = new Image();
-      thumb.src=src; thumb.alt=''; button.append(thumb); button.setAttribute('aria-label',label);
+      thumb.src=src; thumb.alt=''; button.append(thumb, label); button.setAttribute('aria-label',label);
       button.onclick=()=>{
         image.src=src; image.alt='Power '+pc.model+' — '+label;
         for(const angle of angles.children) angle.setAttribute('aria-pressed',String(angle===button));
@@ -72,7 +72,7 @@
         score.textContent=Math.round(fps)+' FPS';line.append('Power '+pc.model,bar,score);details.append(line);
       }
       const source=document.createElement('a');source.href=test.url;source.textContent=test.source;source.title=test.settings;
-      details.append(source);row.append(art,details);games.append(row);
+      details.append('Замеры видеокарт · ', source);row.append(art,details);games.append(row);
     }
   }
   byId('show-resolution').onchange=showGames;showGames();

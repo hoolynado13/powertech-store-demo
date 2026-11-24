@@ -14,11 +14,14 @@ export function mountViewer(section, pins, onLoss) {
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   section.classList.add('has-studio');
   let running=false, visible=false, animation=0, elapsed=0, previous=0;
+  let spinning = true;
   function tick(now) {
     if(!running) return;
     const delta=now-previous;
     if(delta>=1000/30) {
-      elapsed+=Math.min(delta,90)/1000;
+      const seconds = Math.min(delta,90)/1000;
+      if (!motion.matches) elapsed += seconds;
+      if (spinning) view = {...view, yaw:view.yaw + seconds * .26};
       previous=now;
       render();
     }
@@ -35,7 +38,8 @@ export function mountViewer(section, pins, onLoss) {
   });
   visibility.observe(lens);
   document.addEventListener('visibilitychange',syncAnimation);
-  motion.addEventListener('change',syncAnimation);
+  function motionChanged() { spinning = !view.inspecting; syncAnimation(); }
+  motion.addEventListener('change',motionChanged);
   function render() {
     const points = studio.draw(view,elapsed);
     points.forEach((point,i) => {
@@ -47,6 +51,7 @@ export function mountViewer(section, pins, onLoss) {
   }
   canvas.addEventListener('materialready',render);
   function focus(index) {
+    spinning = index === null; syncAnimation();
     cancelAnimationFrame(frame);
     const start = view;
     const end = index === null ? home : {
@@ -73,6 +78,7 @@ export function mountViewer(section, pins, onLoss) {
   let drag;
   canvas.onpointerdown = event => {
     if(!event.isPrimary || event.button!==0) return;
+    spinning = false; syncAnimation();
     canvas.setPointerCapture(event.pointerId);
     drag=[event.clientX,event.clientY];
   };
@@ -81,10 +87,10 @@ export function mountViewer(section, pins, onLoss) {
     orbit((drag[0]-event.clientX)*.009,(event.clientY-drag[1])*.007);
     drag=[event.clientX,event.clientY];
   };
-  canvas.onlostpointercapture = () => { drag=null; };
+  canvas.onlostpointercapture = () => { drag=null; spinning = !view.inspecting; };
   canvas.onkeydown = event => {
     const delta={ArrowLeft:[-.16,0],ArrowRight:[.16,0],ArrowUp:[0,.1],ArrowDown:[0,-.1]}[event.key];
-    if(delta) {event.preventDefault(); orbit(...delta);}
+    if(delta) {spinning = false; syncAnimation(); event.preventDefault(); orbit(...delta); spinning = !view.inspecting;}
   };
   const resize=new ResizeObserver(render);
   resize.observe(lens);
@@ -92,7 +98,7 @@ export function mountViewer(section, pins, onLoss) {
     canvas.removeEventListener('materialready',render);
     running=false; cancelAnimationFrame(animation); visibility.disconnect();
     document.removeEventListener('visibilitychange',syncAnimation);
-    motion.removeEventListener('change',syncAnimation);
+    motion.removeEventListener('change',motionChanged);
     resize.disconnect(); cancelAnimationFrame(frame);
     section.classList.remove('has-studio'); canvas.remove(); onLoss();
   },{once:true});

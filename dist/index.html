@@ -12,6 +12,19 @@
   <script defer src="store-help.js"></script>
   <script defer src="amber.js"></script>
   <script defer src="rig-builder.js"></script>
+  <link rel="stylesheet" href="motion.css">
+  <link rel="stylesheet" href="workshop-gallery.css">
+  <link rel="stylesheet" href="video.css">
+  <script defer src="motion.js"></script>
+  <script defer src="workshop-gallery.js"></script>
+  <script defer src="video.js"></script>
+  <link rel="stylesheet" href="atelier.css">
+  <link rel="stylesheet" href="art-hero.css">
+  <link rel="stylesheet" href="art-catalog.css">
+  <link rel="stylesheet" href="art-workshop.css">
+  <script defer src="art-hero.js"></script>
+  <script defer src="art-catalog.js"></script>
+  <script defer src="art-workshop.js"></script>
 </head>
 <body>
   <header class="wrap nav">
@@ -42,7 +55,11 @@
       <div id="catalog-tools">
         <nav class="series" aria-label="Категория ПК"><a href="#catalog">Все сборки</a><a href="#gaming">Игровые</a><a href="#exclusive">Эксклюзивные</a><a href="#professional">Профессиональные</a></nav>
       </div>
-      <div class="catalog-body"><aside class="catalog-filter"><form id="prices" aria-label="Диапазон цен">
+      <div class="catalog-actions-row">
+        <button id="filter-toggle" class="tool-button" type="button" aria-controls="catalog-filter" aria-expanded="false">Фильтры <span id="filter-count"></span></button>
+        <button id="find-game" class="tool-button" aria-haspopup="dialog">Подобрать по игре</button>
+      </div>
+      <div class="catalog-body"><div class="catalog-filter" id="catalog-filter" hidden><form id="prices" aria-label="Диапазон цен">
           <div class="price-header"><span>Цена</span><span id="price-values"></span>
             <button type="reset" aria-label="Сбросить диапазон цен" title="Сбросить диапазон цен">↺</button>
           </div>
@@ -53,8 +70,10 @@
           </div>
         </form><label>Процессор<select id="cpu-filter"><option value="">Все</option><option>Intel</option><option>AMD</option></select></label>
         <label>Видеокарта<select id="gpu-filter"><option value="">Все</option><option>GeForce</option><option>Radeon</option></select></label>
-        <button id="find-game" class="tool-button">Подобрать по игре ↗</button></aside>
-      <div id="products" aria-live="polite"></div></div>
+        </div>
+      <div id="products" aria-live="polite"></div>
+      <div id="catalog-empty" hidden><h3>Сборок не найдено</h3><p>Попробуйте другое название или снимите ограничения.</p>
+        <button type="button" id="reset-catalog" class="tool-button">Показать все сборки</button></div></div>
       <div class="compare-tray" hidden>
         <span id="compare-status" aria-live="polite"></span>
         <button id="compare-open" class="action" aria-haspopup="dialog" disabled>Сравнить</button>
@@ -62,22 +81,27 @@
       </div>
     </section>
     <section class="show-product" aria-labelledby="show-name">
-      <p class="crumb">Каталог ПК <span> / </span> Карточка сборки</p>
+      <div class="panel-title"><h2>Обзор сборки</h2><select id="show-model" aria-label="Модель для обзора"></select></div>
       <div class="show-product-body"><div class="show-gallery"><img id="show-image" alt=""><div id="show-angles" aria-label="Ракурсы сборки"></div></div>
-      <div class="show-description"><label for="show-model">Сборка</label><select id="show-model"></select><h2 id="show-name"></h2><strong id="show-price"></strong>
-      <button class="action" id="show-stock">Уточнить наличие</button><dl id="show-specs"></dl></div></div>
+      <div class="show-description"><h2 id="show-name"></h2><dl id="show-specs"></dl><strong id="show-price"></strong>
+      <button class="action" id="show-stock">Уточнить наличие</button><a class="configure-model" href="#configurator">Изменить комплектацию ↗</a></div></div>
+    </section>
+    <section class="film-screen" aria-labelledby="film-title">
+      <video loop muted playsinline preload="none" poster="film-case.webp" data-src="showroom-film.webm" aria-label="Корпуса и комплектующие PowerTech крупным планом"></video>
+      <div class="film-caption"><h2 id="film-title">Сборки крупным планом</h2><a class="film-explore" href="#inside-a1">Рассмотреть в 3D <span aria-hidden="true">↗</span></a></div>
     </section>
     <section class="show-compare"><h2>Сравнение компьютеров</h2><div class="pair-pickers"><label>Первая сборка<select id="pair-a"></select></label><label>Вторая сборка<select id="pair-b"></select></label></div>
     <table aria-label="Сравнение выбранных сборок"><tbody id="pair-table"></tbody></table><button class="tool-button" id="pair-open">Все отличия ↗</button></section>
     <section class="show-bench"><div class="panel-title"><h2>Тесты в играх</h2><label>Разрешение<select id="show-resolution"><option value="0">1080p</option><option value="1">1440p</option></select></label></div><div id="show-games"></div><button id="open-bench" class="tool-button" aria-haspopup="dialog">График FPS ↗</button></section>
     <section id="configurator" class="rig-builder" aria-labelledby="rig-title">
-      <div class="rig-heading"><h2 id="rig-title">Конфигуратор ПК</h2><p>Выберите детали и сохраните список для мастерской.</p></div>
+      <div class="rig-heading"><h2 id="rig-title">Конфигуратор ПК</h2><p>Начните со сборки из каталога или подберите детали вручную.</p></div>
+      <div class="rig-presets" role="group" aria-label="Взять за основу сборку из каталога"></div>
       <div class="rig-layout"><form id="rig-options"></form>
         <aside class="rig-summary"><h3>Ваша конфигурация</h3><dl id="rig-list"></dl><button class="action" id="rig-save" type="button">Скачать список ↓</button></aside>
       </div>
     </section>
     <section id="inside-a1" class="cutaway" aria-labelledby="cutaway-title" hidden>
-      <div class="cutaway-heading"><h2 id="cutaway-title">3D-превью корпуса</h2><p class="cutaway-hint">Нажмите на метку, чтобы приблизить деталь</p>
+      <div class="cutaway-heading"><h2 id="cutaway-title">Внутри корпуса</h2><p class="cutaway-hint">Нажмите на метку, чтобы приблизить деталь</p>
       </div>
       <div class="cutaway-photo"><div class="cutaway-lens">
         <img src="a1-inside.webp" loading="lazy" width="767" height="340" alt="Вид внутри корпуса: видеокарта снизу, башенный кулер в центре и память справа">
@@ -191,7 +215,7 @@
   <dialog id="product" aria-labelledby="product-name">
     <form method="dialog"><button class="close" aria-label="Закрыть карточку" autofocus>×</button></form>
     <div class="product-layout">
-      <div class="product-gallery"><button class="product-image" aria-label="Увеличить фотографию"><img alt=""><span aria-hidden="true">Увеличить ⤢</span></button><div class="gallery-controls"><div class="angles" role="group" aria-label="Выберите ракурс"></div><button type="button" id="gallery-play"></button></div><small>Иллюстрации сборки</small></div>
+      <div class="product-gallery"><button class="product-image" aria-label="Увеличить фотографию"><img alt=""><span aria-hidden="true">Увеличить ⤢</span></button><div class="gallery-controls"><div class="angles" role="group" aria-label="Выберите ракурс"></div></div><small>Иллюстрации сборки</small></div>
       <div class="product-info">
         <h2 id="product-name"></h2>
         <dl></dl>
@@ -205,8 +229,9 @@
   </dialog>
   <dialog id="chat" aria-labelledby="chat-title">
     <form method="dialog"><button class="close" aria-label="Закрыть">×</button></form>
-    <p class="kicker">Telegram</p><h2 id="chat-title">Вопрос о сборке</h2>
-    <p id="draft"></p><small>Это предпросмотр сообщения. Отправка доступна в рабочей версии.</small>
+    <h2 id="chat-title">Запрос о наличии</h2>
+    <p id="draft"></p><button type="button" class="action" id="copy-draft">Скопировать запрос</button>
+    <small>Демокаталог. Сообщение можно скопировать для переписки.</small><p id="draft-status" role="status"></p>
   </dialog>
 </body>
 </html>

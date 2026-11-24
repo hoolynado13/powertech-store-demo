@@ -74,7 +74,11 @@ function drawBenchmark() {
   benchmark.querySelector('#bench-credit').replaceChildren('Замеры видеокарт · '+test.settings+' · ',source);
 }
 benchGame.onchange=benchResolution.onchange=drawBenchmark;
-document.querySelector('#open-bench').onclick=()=>{drawBenchmark(); benchmark.showModal();};
+document.querySelector('#open-bench').onclick = () => {
+  benchResolution.value = document.querySelector('#show-resolution').value;
+  drawBenchmark();
+  benchmark.showModal();
+};
 
 function gpuFPS(game, pixels, gpu) {
   const value = fpsTests[game]?.scores[gpu]?.[String(pixels) === '1080' ? 0 : 1];

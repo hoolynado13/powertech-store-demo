@@ -19,7 +19,7 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 function reveal(element) {
   if (reducedMotion.matches) return;
   element.getAnimations().forEach(animation => animation.cancel());
-  element.animate([{opacity: .4, transform: 'translateY(5px)'}, {opacity: 1, transform: 'none'}],
+  element.animate([{opacity: .4, translate: '0 5px'}, {opacity: 1, translate: '0 0'}],
     {duration: 260, easing: 'ease-out'});
 }
 let savedModels;
@@ -286,7 +286,6 @@ function fillSpecs(list, pc, includeGpu = false) {
   }
 }
 const angles = product.querySelector('.angles');
-const playButton = document.querySelector('#gallery-play');
 const galleryImage = product.querySelector('.product-image img');
 let framesForProduct = [];
 let angleIndex = 0;
@@ -307,9 +306,6 @@ function scheduleFrame() {
 }
 function setAutoPlay(enabled) {
   autoPlay = enabled;
-  playButton.textContent = enabled ? 'Ⅱ' : '▶';
-  playButton.setAttribute('aria-label', enabled ? 'Приостановить смену ракурсов' : 'Включить смену ракурсов');
-  playButton.title = playButton.getAttribute('aria-label');
   scheduleFrame();
 }
 function showAngle(index) {
@@ -335,14 +331,12 @@ function setupGallery(pc) {
     progress.className = 'slide-progress';
     progress.setAttribute('aria-hidden','true');
     button.append(thumb,frame.label,progress);
-    button.onclick = () => { setAutoPlay(false); showAngle(index); };
+    button.onclick = () => { showAngle(index); };
     angles.append(button);
   });
-  playButton.hidden = views.length < 2;
   setAutoPlay(!reducedMotion.matches && views.length > 1);
   showAngle(0);
 }
-playButton.onclick = () => setAutoPlay(!autoPlay);
 document.addEventListener('visibilitychange',scheduleFrame);
 reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) setAutoPlay(false); });
 for (const overlay of [chat,document.querySelector('#lightbox')]) {
@@ -352,6 +346,7 @@ product.addEventListener('close', scheduleFrame);
 
 function askStock(pc) {
   document.querySelector('#draft').textContent = 'Здравствуйте! Есть в наличии Power ' + pc.model + ' за ' + money(pc.price) + '?';
+  document.querySelector('#draft-status').textContent = '';
   chat.showModal();
 }
 function openProduct(pc, sourcePhoto) {
@@ -410,7 +405,12 @@ function render() {
   }
   syncSaved();
   syncComparison();
-  if (!visible.length) products.textContent = 'По этим условиям сборок нет. Измените цену или выберите другую категорию.';
+  document.querySelector('#catalog-empty').hidden = visible.length !== 0;
+  const slider = prices.elements.minimum;
+  const priceFiltered = slider.hasAttribute('min') &&
+    (minimum !== Number(slider.min) || maximum !== Number(slider.max));
+  const filterCount = Number(Boolean(cpu)) + Number(Boolean(gpu)) + Number(priceFiltered);
+  document.querySelector('#filter-count').textContent = filterCount || '';
 }
 function syncCategory() {
   const target = location.hash.slice(1);
@@ -481,6 +481,38 @@ prices.addEventListener('reset', event => {
   updatePrices();
   lower.focus({preventScroll:true});
 });
+const filterToggle = document.querySelector('#filter-toggle');
+const filterPanel = document.querySelector('#catalog-filter');
+filterToggle.onclick = () => {
+  filterPanel.hidden = !filterPanel.hidden;
+  filterToggle.setAttribute('aria-expanded', String(!filterPanel.hidden));
+};
+document.querySelector('#reset-catalog').onclick = () => {
+  document.querySelector('#catalog-search').value = '';
+  document.querySelector('#cpu-filter').value = '';
+  document.querySelector('#gpu-filter').value = '';
+  history.replaceState(null, '', '#catalog');
+  lower.value = lower.defaultValue;
+  upper.value = upper.defaultValue;
+  syncCategory();
+  updatePrices();
+  document.querySelector('#catalog-search').focus({preventScroll: true});
+};
+document.querySelector('#copy-draft').onclick = async () => {
+  const draft = document.querySelector('#draft');
+  const status = document.querySelector('#draft-status');
+  try {
+    await navigator.clipboard.writeText(draft.textContent);
+    status.textContent = 'Запрос скопирован';
+  } catch {
+    const range = document.createRange();
+    range.selectNodeContents(draft);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    status.textContent = 'Скопируйте выделенный текст';
+  }
+};
 let dragHandle;
 function valueAt(clientX) {
   const line = rail.querySelector('.rail-line').getBoundingClientRect();

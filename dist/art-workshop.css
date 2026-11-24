@@ -1,0 +1,51 @@
+#services.has-workshop-gallery {
+  --paper-stock:#ecdec4;
+  grid-template-columns:minmax(0,1.5fr) minmax(260px,.85fr);
+  grid-template-areas:"head head" "photo notes" "tabs notes";
+  gap:0; margin:clamp(26px,5vw,80px) clamp(12px,4vw,68px);
+  padding:0; border:0; border-radius:0; background:transparent;
+}
+#services .workshop-heading {display:flex;justify-content:space-between;align-items:end;padding:0 0 clamp(16px,2vw,32px);border:0;}
+#services .workshop-heading h2 {margin:0;font-size:clamp(32px,5vw,88px);line-height:.96;letter-spacing:-.055em;}
+#services .workshop-heading p {margin:8px 0 0;color:var(--muted);}
+#services .workshop-gallery {aspect-ratio:auto;min-height:clamp(260px,27vw,475px);height:100%;border-radius:0;background:#15120f;}
+#services .workshop-gallery figcaption {bottom:clamp(16px,2.4vw,40px);left:clamp(16px,2.4vw,40px);right:16px;gap:8px;}
+#services .workshop-gallery figcaption strong {font:650 clamp(20px,2.1vw,34px)/1.1 system-ui,sans-serif;letter-spacing:-.045em;}
+#services .workshop-frame-number {color:#fff1d8;letter-spacing:.12em;font-variant-numeric:tabular-nums;}
+#services .service-notes {display:grid;align-self:stretch;align-items:start;padding:clamp(20px,3vw,50px);color:#28231d;background:var(--paper-stock);border:0;border-radius:0;}
+#services .service-panel {grid-template-columns:minmax(0,1fr);align-content:start;gap:clamp(14px,1.6vw,26px);width:100%;}
+#services .service-panel h3 {margin:0;font:650 clamp(23px,2.6vw,45px)/1.04 system-ui,sans-serif;letter-spacing:-.045em;overflow-wrap:anywhere;}
+#services .service-panel>p {margin:0;color:#362f26;font:440 clamp(16px,1.2vw,21px)/1.5 system-ui,sans-serif;max-width:40ch;}
+#services .service-panel>div {padding:14px 0 0;border:0;border-top:1px solid #b6a993;}
+#services .service-panel>div b {font-size:13px;}
+#services .service-panel>div p {color:#50483e;line-height:1.5;margin:5px 0 0;}
+#services .workshop-consult {border:0;background:#24201b;color:#fff4dd;padding:11px 16px;min-height:44px;text-align:left;justify-self:start;border-radius:3px;font-size:15px;}
+#services .workshop-consult::after {content:'↗';margin-inline-start:10px;}
+#services .workshop-consult:focus-visible {outline-color:#453322;}
+#services .service-strip {padding:0;gap:0;border:0;}
+#services .service-frame, #services .service-frame[aria-selected=true] {border:0;border-radius:0;border-bottom:2px solid #4d4135;box-shadow:none;min-height:56px;padding:8px 10px;gap:6px;background:#201b16;}
+#services .service-frame[aria-selected=true] {color:var(--orange);border-bottom-color:var(--orange);background:#34291f;}
+#services .service-frame span {font:550 clamp(12px,1vw,16px)/1.2 system-ui,sans-serif;}
+#services .service-frame svg {width:17px;height:17px;}
+.store-footer {background:#161310;padding:clamp(32px,4vw,70px) 0 62px;}
+.store-footer>.wrap {width:min(92%,1656px);}
+.store-footer .footer-columns {padding:0 0 clamp(22px,3vw,45px);margin:0;grid-template-columns:1.2fr .8fr 1fr;gap:clamp(20px,4vw,70px);}
+.store-footer .footer-columns h2 {color:#f3dbb4;font:600 clamp(16px,1.35vw,21px)/1.2 system-ui,sans-serif;}
+.store-footer .footer-columns a {padding-block:3px;}
+.store-footer .footer-brand {display:flex;align-items:center;gap:.16em;margin:0;padding:.14em 0 .16em;border-top:1px solid var(--edge);color:#efddc3;font:800 italic clamp(22px,8.2vw,149px)/1.1 var(--display);letter-spacing:-.06em;white-space:nowrap;}
+.store-footer .footer-brand i {display:inline-block;width:.58em;height:.72em;}
+.store-footer .footer-note {border-top:1px solid var(--edge);}
+.return-storefront {display:inline-flex;align-items:center;min-height:44px;white-space:nowrap;color:#f6c891;}
+@media(max-width:840px) {
+  #services.has-workshop-gallery {grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "photo" "tabs" "notes";}
+  #services .workshop-gallery {min-height:0;aspect-ratio:1.9;}
+  #services .service-strip {grid-template-columns:repeat(2,minmax(0,1fr));}
+  #services .service-panel {gap:14px;}
+  .store-footer .footer-columns {grid-template-columns:repeat(2,minmax(0,1fr));}
+  .store-footer #about {grid-column:1/-1;}
+}
+@media(max-width:440px) {
+  .store-footer .footer-columns {grid-template-columns:1fr;gap:18px;}
+  .store-footer .footer-note {flex-wrap:wrap;}
+  #services .service-frame span {font-size:13px;}
+}
